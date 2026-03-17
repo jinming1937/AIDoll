@@ -1,0 +1,132 @@
+name: Build Android App
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/apps/rn/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/apps/rn/**'
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Build profile'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - development
+          - preview
+          - production
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build Android APK
+        working-directory: packages/apps/rn
+        run: eas build --platform android --profile ${{ github.event.inputs.profile || 'preview' }} --non-interactive --clear-cache
+
+      - name: Download build artifacts
+        if: github.event.inputs.profile == 'preview' || github.event.inputs.profile == 'production'
+        working-directory: packages/apps/rn
+        run: |
+          # Get the build URL from EAS
+          BUILD_URL=$(eas build:list --platform android --limit 1 --json | jq -r '.[0].artifacts.buildUrl')
+          if [ -n "$BUILD_URL" ]; then
+            curl -L -o android-build.apk "$BUILD_URL"
+          fi
+
+      - name: Upload APK artifact
+        if: github.event.inputs.profile == 'preview' || github.event.inputs.profile == 'production'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: packages/apps/rn/android-build.apk
+          retention-days: 30
+
+  build-android-local:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run TypeScript check
+        working-directory: packages/apps/rn
+        run: npx tsc --noEmit
+
+      - name: Run ESLint
+        working-directory: packages/apps/rn
+        run: pnpm run lint
+
+      - name: Run tests
+        working-directory: packages/apps/rn
+        run: pnpm test -- --passWithNoTests
