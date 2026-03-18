@@ -16,13 +16,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import DollCharacter from '../components/DollCharacter';
-import VoiceButton from '../components/VoiceButton';
 import MessageBubble from '../components/MessageBubble';
 import OutfitPanel, { OutfitPanelRef } from '../components/OutfitPanel';
 import ChatInput from '../components/ChatInput';
 import VoicePanel from '../components/VoicePanel';
 import { useDollStore } from '../store/dollStore';
 import { useChatStore } from '../store/chatStore';
+import { useThemeStore } from '../store/themeStore';
 import aiService from '../services/aiService';
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -42,11 +42,14 @@ interface HomeScreenProps {
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { config, setAnimation } = useDollStore();
   const { messages, addMessage, voiceState, isAITyping } = useChatStore();
+  const { getThemeColors } = useThemeStore();
   const { t } = useTranslation();
   const scrollViewRef = useRef<ScrollView>(null);
   const outfitPanelRef = useRef<OutfitPanelRef>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [isVoicePanelVisible, setIsVoicePanelVisible] = useState(false);
+
+  const themeColors = getThemeColors();
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -120,13 +123,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+    <SafeAreaView style={[styles.container, { backgroundColor: themeColors.background }]}>
+      <StatusBar style={themeColors.primary === '#2C3E50' ? 'light' : 'light'} />
 
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: themeColors.primary }]}>
         <TouchableOpacity
-          style={styles.outfitButton}
+          style={[styles.outfitButton, { backgroundColor: 'rgba(255,255,255,0.2)' }]}
           onPress={() => outfitPanelRef.current?.toggle()}
         >
           <Ionicons name="shirt-outline" size={24} color="white" />
@@ -135,7 +138,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           {config.name}
         </Animated.Text>
         <TouchableOpacity
-          style={styles.settingsButton}
+          style={[styles.settingsButton, { backgroundColor: 'rgba(255,255,255,0.2)' }]}
           onPress={() => navigation.navigate('Settings')}
         >
           <Ionicons name="settings-outline" size={24} color="white" />
@@ -184,10 +187,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 ))
               )}
               {isAITyping && (
-                <View style={styles.typingIndicator}>
-                  <Animated.View style={styles.typingDot} />
-                  <Animated.View style={[styles.typingDot, { marginHorizontal: 4 }]} />
-                  <Animated.View style={styles.typingDot} />
+                <View style={[styles.typingIndicator, { backgroundColor: themeColors.surface }]}>
+                  <Animated.View style={[styles.typingDot, { backgroundColor: themeColors.textSecondary }]} />
+                  <Animated.View style={[styles.typingDot, { marginHorizontal: 4, backgroundColor: themeColors.textSecondary }]} />
+                  <Animated.View style={[styles.typingDot, { backgroundColor: themeColors.textSecondary }]} />
                 </View>
               )}
             </ScrollView>
@@ -230,7 +233,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F5',
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -242,7 +244,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 10,
-    backgroundColor: '#FF69B4',
   },
   outfitButton: {
     width: 44,
@@ -290,7 +291,6 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 16,
-    color: '#999',
     textAlign: 'center',
   },
   dollContainer: {
@@ -324,7 +324,6 @@ const styles = StyleSheet.create({
   statusText: {
     marginLeft: 8,
     fontSize: 14,
-    color: '#FF69B4',
     fontWeight: '500',
   },
 
@@ -333,7 +332,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: '#F0F0F0',
     borderRadius: 20,
     alignSelf: 'flex-start',
     marginLeft: 16,
@@ -343,7 +341,6 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#999',
   },
 });
 

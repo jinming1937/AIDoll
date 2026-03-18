@@ -7,6 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useThemeStore } from '../store/themeStore';
 
 const { width } = Dimensions.get('window');
 
@@ -22,6 +23,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
   disabled = false,
 }) => {
   const [text, setText] = useState('');
+  const { getThemeColors } = useThemeStore();
+  const themeColors = getThemeColors();
 
   const handleSend = () => {
     if (text.trim() && !disabled) {
@@ -31,14 +34,14 @@ const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputWrapper}>
+    <View style={[styles.container, { backgroundColor: themeColors.surface, borderTopColor: themeColors.border }]}>
+      <View style={[styles.inputWrapper, { backgroundColor: themeColors.background }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: themeColors.text }]}
           value={text}
           onChangeText={setText}
           placeholder="输入消息..."
-          placeholderTextColor="#999"
+          placeholderTextColor={themeColors.textSecondary}
           multiline={false}
           editable={!disabled}
           onSubmitEditing={handleSend}
@@ -51,13 +54,13 @@ const ChatInput: React.FC<ChatInputProps> = ({
           onPress={onVoicePress}
           disabled={disabled}
         >
-          <Ionicons name="mic-outline" size={24} color="#FF69B4" />
+          <Ionicons name="mic-outline" size={24} color={themeColors.primary} />
         </TouchableOpacity>
         
         {/* 发送按钮 */}
         {text.trim().length > 0 && (
           <TouchableOpacity
-            style={styles.sendButton}
+            style={[styles.sendButton, { backgroundColor: themeColors.primary }]}
             onPress={handleSend}
             disabled={disabled}
           >
@@ -74,15 +77,12 @@ const styles = StyleSheet.create({
     width: width,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    backgroundColor: 'white',
     borderTopWidth: 1,
-    borderTopColor: '#EEE',
     zIndex: 20,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
     borderRadius: 24,
     paddingHorizontal: 12,
     paddingVertical: 4,
@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
     paddingVertical: 10,
     paddingHorizontal: 8,
     maxHeight: 100,
@@ -106,7 +105,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#FF69B4',
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 4,
