@@ -203,7 +203,7 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
               style={styles.apiKeyInput}
               value={config.apiKey}
               onChangeText={(text) => setConfig({ ...config, apiKey: text })}
-              placeholder={t('aiSettings.apiKeyPlaceholder', { provider: selectedProvider?.name })}
+              placeholder={t('aiSettings.apiKeyPlaceholder', { provider: selectedProvider?.name || '' })}
               placeholderTextColor="#999"
               secureTextEntry={!showApiKey}
               autoCapitalize="none"

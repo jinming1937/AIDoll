@@ -11,7 +11,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
-const PANEL_WIDTH = width * 0.25;
+const PANEL_WIDTH = 120; // width * 0.18;
+const SUB_PANEL_WIDTH = 120;
 
 // 装扮分类
 const CATEGORIES = [
@@ -61,7 +62,7 @@ const OUTFITS: Record<string, Array<{ id: string; name: string; color: string }>
   ],
 };
 
-type CategoryKey = typeof CATEGORIES[number]['key'];
+export type CategoryKey = typeof CATEGORIES[number]['key'];
 
 export interface OutfitPanelRef {
   toggle: () => void;
@@ -83,42 +84,64 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
     shoes: 'shoes1',
   });
 
-  const panelAnim = useState(new Animated.Value(-PANEL_WIDTH - 50))[0];
-  const subPanelAnim = useState(new Animated.Value(-200))[0];
+  // 分类列表动画
+  const categoryPanelAnim = useState(new Animated.Value(-PANEL_WIDTH))[0];
+  // 子面板动画
+  const subPanelAnim = useState(new Animated.Value(-SUB_PANEL_WIDTH))[0];
 
-  const showPanel = () => {
+  // 显示分类列表
+  const showCategoryPanel = () => {
     setIsVisible(true);
-    Animated.timing(panelAnim, {
+    setSelectedCategory(null);
+    Animated.timing(categoryPanelAnim, {
       toValue: 0,
-      duration: 300,
+      duration: 250,
       useNativeDriver: true,
     }).start();
   };
 
-  const hidePanel = () => {
-    // 先收起子面板
-    Animated.timing(subPanelAnim, {
-      toValue: -200,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-    setSelectedCategory(null);
-
-    // 再收起主面板
-    Animated.timing(panelAnim, {
-      toValue: -PANEL_WIDTH - 50,
-      duration: 300,
+  // 隐藏分类列表
+  const hideCategoryPanel = () => {
+    Animated.timing(categoryPanelAnim, {
+      toValue: -PANEL_WIDTH,
+      duration: 250,
       useNativeDriver: true,
     }).start(() => {
       setIsVisible(false);
     });
   };
 
+  // 显示子面板
+  const showSubPanel = (category: CategoryKey) => {
+    setSelectedCategory(category);
+    Animated.timing(subPanelAnim, {
+      toValue: 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  // 隐藏子面板
+  const hideSubPanel = () => {
+    Animated.timing(subPanelAnim, {
+      toValue: -SUB_PANEL_WIDTH,
+      duration: 250,
+      useNativeDriver: true,
+    }).start(() => {
+      setSelectedCategory(null);
+    });
+  };
+
+  // 切换面板显示/隐藏
   const toggle = () => {
     if (isVisible) {
-      hidePanel();
+      // 如果正在显示，先隐藏子面板（如果有），再隐藏分类列表
+      if (selectedCategory) {
+        hideSubPanel();
+      }
+      hideCategoryPanel();
     } else {
-      showPanel();
+      showCategoryPanel();
     }
   };
 
@@ -127,26 +150,31 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
     isVisible: () => isVisible,
   }));
 
+  // 选择分类
   const selectCategory = (category: CategoryKey) => {
-    if (selectedCategory === category) {
-      // 收起子面板
-      Animated.timing(subPanelAnim, {
-        toValue: -200,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-      setSelectedCategory(null);
-    } else {
-      // 展开子面板
-      setSelectedCategory(category);
-      Animated.timing(subPanelAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
+    // 先收起分类列表
+    Animated.timing(categoryPanelAnim, {
+      toValue: -PANEL_WIDTH,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      // 分类列表收起后，显示子面板
+      showSubPanel(category);
+    });
   };
 
+  // 关闭子面板，返回分类列表
+  const closeSubPanel = () => {
+    hideSubPanel();
+    // 子面板收起后，显示分类列表
+    Animated.timing(categoryPanelAnim, {
+      toValue: 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  // 选择装扮
   const selectOutfit = (category: CategoryKey, outfitId: string) => {
     setSelectedOutfits(prev => ({ ...prev, [category]: outfitId }));
     onSelectOutfit?.(category, outfitId);
@@ -154,31 +182,30 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
 
   return (
     <>
-      {/* 主面板 */}
-      <Animated.View style={[styles.panel, { transform: [{ translateX: panelAnim }] }]}>
-        {/* 分类列表 */}
-        <ScrollView style={styles.categoryList} showsVerticalScrollIndicator={false}>
-          {CATEGORIES.map((category) => (
-            <TouchableOpacity
-              key={category.key}
-              style={[
-                styles.categoryItem,
-                selectedCategory === category.key && styles.categoryItemSelected,
-              ]}
-              onPress={() => selectCategory(category.key)}
-            >
-              <Ionicons
-                name={category.icon as any}
-                size={28}
-                color={selectedCategory === category.key ? '#FF69B4' : 'white'}
-              />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </Animated.View>
+      {/* 分类列表面板 */}
+      {isVisible && !selectedCategory && (
+        <Animated.View
+          style={[
+            styles.categoryPanel,
+            { transform: [{ translateX: categoryPanelAnim }] },
+          ]}
+        >
+          <ScrollView style={styles.categoryList} showsVerticalScrollIndicator={false}>
+            {CATEGORIES.map((category) => (
+              <TouchableOpacity
+                key={category.key}
+                style={styles.categoryItem}
+                onPress={() => selectCategory(category.key)}
+              >
+                <Ionicons name={category.icon as any} size={38} color="pink" />
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </Animated.View>
+      )}
 
-      {/* 子面板 - 显示具体装扮 */}
-      {isVisible && selectedCategory && (
+      {/* 子面板 - 紧贴左侧 */}
+      {selectedCategory && (
         <Animated.View
           style={[
             styles.subPanel,
@@ -189,8 +216,8 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
             <Text style={styles.subPanelTitle}>
               {CATEGORIES.find(c => c.key === selectedCategory)?.label}
             </Text>
-            <TouchableOpacity onPress={() => selectCategory(selectedCategory)}>
-              <Ionicons name="close" size={24} color="#333" />
+            <TouchableOpacity onPress={closeSubPanel}>
+              <Ionicons name="arrow-back" size={24} color="#333" />
             </TouchableOpacity>
           </View>
           <ScrollView style={styles.outfitList} showsVerticalScrollIndicator={false}>
@@ -203,9 +230,7 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
                 ]}
                 onPress={() => selectOutfit(selectedCategory, outfit.id)}
               >
-                <View
-                  style={[styles.outfitColor, { backgroundColor: outfit.color }]}
-                />
+                <View style={[styles.outfitColor, { backgroundColor: outfit.color }]} />
                 <Text style={styles.outfitName}>{outfit.name}</Text>
                 {selectedOutfits[selectedCategory] === outfit.id && (
                   <Ionicons name="checkmark" size={20} color="#FF69B4" />
@@ -220,53 +245,54 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
 });
 
 const styles = StyleSheet.create({
-  panel: {
+  // 分类列表面板
+  categoryPanel: {
     position: 'absolute',
     left: 0,
-    top: 100,
-    bottom: 150,
+    top: 10,
+    bottom: 100,
     width: PANEL_WIDTH,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
+    // backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderTopRightRadius: 16,
+    borderBottomRightRadius: 16,
     zIndex: 100,
   },
   categoryList: {
     flex: 1,
     paddingVertical: 10,
-    paddingHorizontal: 10,
   },
   categoryItem: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 18,
+    paddingVertical: 16,
     marginVertical: 4,
+    marginHorizontal: 8,
     borderRadius: 12,
   },
-  categoryItemSelected: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-  },
 
+  // 子面板 - 紧贴左侧
   subPanel: {
     position: 'absolute',
-    left: PANEL_WIDTH + 5,
-    top: 100,
-    bottom: 150,
-    width: 160,
+    left: 0,
+    top: 10,
+    bottom: 100,
+    width: SUB_PANEL_WIDTH,
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderRadius: 16,
-    zIndex: 99,
+    borderTopRightRadius: 16,
+    borderBottomRightRadius: 16,
+    zIndex: 101,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 2, height: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
-    elevation: 8,
+    elevation: 10,
   },
   subPanelHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#EEE',
@@ -278,16 +304,16 @@ const styles = StyleSheet.create({
   },
   outfitList: {
     flex: 1,
-    padding: 10,
+    padding: 8,
   },
   outfitItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    marginVertical: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    marginVertical: 3,
     backgroundColor: '#F5F5F5',
-    borderRadius: 10,
+    borderRadius: 8,
     borderWidth: 2,
     borderColor: 'transparent',
   },
@@ -296,16 +322,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF0F5',
   },
   outfitColor: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#DDD',
   },
   outfitName: {
     flex: 1,
-    marginLeft: 10,
-    fontSize: 14,
+    marginLeft: 8,
+    fontSize: 13,
     color: '#333',
   },
 });

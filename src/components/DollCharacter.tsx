@@ -252,7 +252,7 @@ const DollCharacter: React.FC<DollCharacterProps> = ({ scale = 1 }) => {
         />
 
         {/* Left Arm */}
-        <AnimatedG style={armStyle}>
+        <AnimatedG>
           <Path
             d="M75 155 Q45 190 40 235"
             stroke={config.skinColor}
@@ -264,7 +264,7 @@ const DollCharacter: React.FC<DollCharacterProps> = ({ scale = 1 }) => {
         </AnimatedG>
 
         {/* Right Arm */}
-        <AnimatedG style={armStyle}>
+        <AnimatedG>
           <Path
             d="M125 155 Q155 190 160 235"
             stroke={config.skinColor}
@@ -279,7 +279,7 @@ const DollCharacter: React.FC<DollCharacterProps> = ({ scale = 1 }) => {
         <Rect x="88" y="125" width="24" height="25" fill={config.skinColor} />
 
         {/* Head Group */}
-        <AnimatedG style={headStyle}>
+        <AnimatedG>
           {/* Face - oval shape */}
           <Ellipse cx="100" cy="85" rx="50" ry="58" fill="url(#skinGradient)" />
 

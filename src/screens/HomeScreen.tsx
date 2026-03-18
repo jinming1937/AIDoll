@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,6 +7,9 @@ import {
   ScrollView,
   Dimensions,
   Animated,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +19,8 @@ import DollCharacter from '../components/DollCharacter';
 import VoiceButton from '../components/VoiceButton';
 import MessageBubble from '../components/MessageBubble';
 import OutfitPanel, { OutfitPanelRef } from '../components/OutfitPanel';
+import ChatInput from '../components/ChatInput';
+import VoicePanel from '../components/VoicePanel';
 import { useDollStore } from '../store/dollStore';
 import { useChatStore } from '../store/chatStore';
 import aiService from '../services/aiService';
@@ -41,6 +46,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const outfitPanelRef = useRef<OutfitPanelRef>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [isVoicePanelVisible, setIsVoicePanelVisible] = useState(false);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -92,6 +98,27 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
   };
 
+  // 监听键盘事件，自动滚动到底部
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        scrollToBottom();
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        scrollToBottom();
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
@@ -115,71 +142,87 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Main Content */}
-      <View style={styles.content}>
-        {/* Outfit Panel */}
-        <OutfitPanel
-          ref={outfitPanelRef}
-          onSelectOutfit={(category, outfitId) => {
-            console.log('Selected outfit:', category, outfitId);
-            // TODO: Update doll appearance based on selection
-          }}
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+      >
+        {/* Main Content */}
+        <View style={styles.content}>
+          {/* Outfit Panel */}
+          <OutfitPanel
+            ref={outfitPanelRef}
+            onSelectOutfit={(category, outfitId) => {
+              console.log('Selected outfit:', category, outfitId);
+              // TODO: Update doll appearance based on selection
+            }}
+          />
+
+          {/* Messages Area */}
+          <View style={styles.messagesContainer}>
+            <ScrollView
+              ref={scrollViewRef}
+              style={styles.messagesScroll}
+              contentContainerStyle={styles.messagesContent}
+              onContentSizeChange={scrollToBottom}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              {messages.length === 0 ? (
+                <View style={styles.welcomeContainer}>
+                  <Animated.Text style={[styles.welcomeText, { opacity: fadeAnim }]}>
+                    {t('home.welcome', { name: config.name })}
+                  </Animated.Text>
+                </View>
+              ) : (
+                messages.map((message) => (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    dollName={config.name}
+                  />
+                ))
+              )}
+              {isAITyping && (
+                <View style={styles.typingIndicator}>
+                  <Animated.View style={styles.typingDot} />
+                  <Animated.View style={[styles.typingDot, { marginHorizontal: 4 }]} />
+                  <Animated.View style={styles.typingDot} />
+                </View>
+              )}
+            </ScrollView>
+          </View>
+
+          {/* Doll Character */}
+          <View style={styles.dollContainer}>
+            <DollCharacter scale={0.8} />
+          </View>
+        </View>
+
+        {/* Voice Status */}
+        {voiceState.isListening && (
+          <View style={styles.statusContainer}>
+            <Animated.View style={styles.listeningIndicator}>
+              <Ionicons name="mic" size={20} color="#FF69B4" />
+              <Animated.Text style={styles.statusText}>{t('home.listening')}</Animated.Text>
+            </Animated.View>
+          </View>
+        )}
+
+        {/* Bottom Controls - Chat Input */}
+        <ChatInput
+          onSendMessage={handleVoiceResult}
+          onVoicePress={() => setIsVoicePanelVisible(true)}
+          disabled={isAITyping}
         />
+      </KeyboardAvoidingView>
 
-        {/* Messages Area */}
-        <View style={styles.messagesContainer}>
-          <ScrollView
-            ref={scrollViewRef}
-            style={styles.messagesScroll}
-            contentContainerStyle={styles.messagesContent}
-            onContentSizeChange={scrollToBottom}
-            showsVerticalScrollIndicator={false}
-          >
-            {messages.length === 0 ? (
-              <View style={styles.welcomeContainer}>
-                <Animated.Text style={[styles.welcomeText, { opacity: fadeAnim }]}>
-                  {t('home.welcome', { name: config.name })}
-                </Animated.Text>
-              </View>
-            ) : (
-              messages.map((message) => (
-                <MessageBubble
-                  key={message.id}
-                  message={message}
-                  dollName={config.name}
-                />
-              ))
-            )}
-            {isAITyping && (
-              <View style={styles.typingIndicator}>
-                <Animated.View style={styles.typingDot} />
-                <Animated.View style={[styles.typingDot, { marginHorizontal: 4 }]} />
-                <Animated.View style={styles.typingDot} />
-              </View>
-            )}
-          </ScrollView>
-        </View>
-
-        {/* Doll Character */}
-        <View style={styles.dollContainer}>
-          <DollCharacter scale={0.8} />
-        </View>
-      </View>
-
-      {/* Voice Status */}
-      {voiceState.isListening && (
-        <View style={styles.statusContainer}>
-          <Animated.View style={styles.listeningIndicator}>
-            <Ionicons name="mic" size={20} color="#FF69B4" />
-            <Animated.Text style={styles.statusText}>{t('home.listening')}</Animated.Text>
-          </Animated.View>
-        </View>
-      )}
-
-      {/* Bottom Controls */}
-      <View style={styles.bottomContainer}>
-        <VoiceButton onVoiceResult={handleVoiceResult} />
-      </View>
+      {/* Voice Panel */}
+      <VoicePanel
+        isVisible={isVoicePanelVisible}
+        onClose={() => setIsVoicePanelVisible(false)}
+        onVoiceResult={handleVoiceResult}
+      />
     </SafeAreaView>
   );
 };
@@ -188,6 +231,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF0F5',
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -281,11 +327,7 @@ const styles = StyleSheet.create({
     color: '#FF69B4',
     fontWeight: '500',
   },
-  bottomContainer: {
-    alignItems: 'center',
-    paddingBottom: 30,
-    paddingTop: 10,
-  },
+
   typingIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
