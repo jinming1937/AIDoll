@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: 1,
     borderTopColor: '#EEE',
+    zIndex: 20,
   },
   inputWrapper: {
     flexDirection: 'row',

@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   },
   messagesContainer: {
     position: 'absolute',
-    top: 0,
+    top: 350,
     left: 0,
     right: 0,
     height: height * 0.35,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   },
   dollContainer: {
     position: 'absolute',
-    top: height * 0.15,
+    top: 10,
     left: 0,
     right: 0,
     alignItems: 'center',
