@@ -15,6 +15,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import DollCharacter from '../components/DollCharacter';
 import VoiceButton from '../components/VoiceButton';
 import MessageBubble from '../components/MessageBubble';
+import OutfitPanel, { OutfitPanelRef } from '../components/OutfitPanel';
 import { useDollStore } from '../store/dollStore';
 import { useChatStore } from '../store/chatStore';
 import aiService from '../services/aiService';
@@ -38,6 +39,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { messages, addMessage, voiceState, isAITyping } = useChatStore();
   const { t } = useTranslation();
   const scrollViewRef = useRef<ScrollView>(null);
+  const outfitPanelRef = useRef<OutfitPanelRef>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -96,7 +98,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       {/* Header */}
       <View style={styles.header}>
-        <View style={styles.headerLeft} />
+        <TouchableOpacity
+          style={styles.outfitButton}
+          onPress={() => outfitPanelRef.current?.toggle()}
+        >
+          <Ionicons name="shirt-outline" size={24} color="white" />
+        </TouchableOpacity>
         <Animated.Text style={[styles.headerTitle, { opacity: fadeAnim }]}>
           {config.name}
         </Animated.Text>
@@ -110,6 +117,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       {/* Main Content */}
       <View style={styles.content}>
+        {/* Outfit Panel */}
+        <OutfitPanel
+          ref={outfitPanelRef}
+          onSelectOutfit={(category, outfitId) => {
+            console.log('Selected outfit:', category, outfitId);
+            // TODO: Update doll appearance based on selection
+          }}
+        />
+
         {/* Messages Area */}
         <View style={styles.messagesContainer}>
           <ScrollView
@@ -182,8 +198,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     backgroundColor: '#FF69B4',
   },
-  headerLeft: {
-    width: 40,
+  outfitButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerTitle: {
     fontSize: 20,
