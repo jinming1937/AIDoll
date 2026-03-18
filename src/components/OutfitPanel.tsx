@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '../hooks/useTranslation';
+import { useThemeStore } from '../store/themeStore';
 
 const { width, height } = Dimensions.get('window');
 const PANEL_WIDTH = 120; // width * 0.18;
@@ -85,6 +86,8 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
     shoes: 'shoes1',
   });
   const { t } = useTranslation();
+  const { getThemeColors } = useThemeStore();
+  const themeColors = getThemeColors();
 
   // 分类列表动画
   const categoryPanelAnim = useState(new Animated.Value(-PANEL_WIDTH))[0];
@@ -199,7 +202,7 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
                 style={styles.categoryItem}
                 onPress={() => selectCategory(category.key)}
               >
-                <Ionicons name={category.icon as any} size={38} color="pink" />
+                <Ionicons name={category.icon as any} size={38} color={themeColors.primary} />
               </TouchableOpacity>
             ))}
           </ScrollView>
