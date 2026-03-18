@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeStore } from '../store/themeStore';
+import { useTranslation } from '../hooks/useTranslation';
 
 const { width } = Dimensions.get('window');
 
@@ -25,6 +26,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
   const [text, setText] = useState('');
   const { getThemeColors } = useThemeStore();
   const themeColors = getThemeColors();
+  const { t } = useTranslation();
 
   const handleSend = () => {
     if (text.trim() && !disabled) {
@@ -40,7 +42,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           style={[styles.input, { color: themeColors.text }]}
           value={text}
           onChangeText={setText}
-          placeholder="输入消息..."
+          placeholder={t('chat.inputPlaceholder')}
           placeholderTextColor={themeColors.textSecondary}
           multiline={false}
           editable={!disabled}

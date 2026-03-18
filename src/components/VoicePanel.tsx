@@ -10,6 +10,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import VoiceService from '../services/voiceService';
 import { useChatStore } from '../store/chatStore';
+import { useTranslation } from '../hooks/useTranslation';
 
 const { width, height } = Dimensions.get('window');
 const BUTTON_SIZE = 100;
@@ -28,6 +29,7 @@ const VoicePanel: React.FC<VoicePanelProps> = ({
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { setVoiceState } = useChatStore();
+  const { t } = useTranslation();
 
   const slideAnim = useRef(new Animated.Value(height)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -116,7 +118,7 @@ const VoicePanel: React.FC<VoicePanelProps> = ({
     } catch (error) {
       console.error('Failed to start listening:', error);
       setIsListening(false);
-      setVoiceState({ isListening: false, isProcessing: false, error: '无法启动语音识别' });
+      setVoiceState({ isListening: false, isProcessing: false, error: t('voice.startFailed') });
     }
   };
 
@@ -158,10 +160,10 @@ const VoicePanel: React.FC<VoicePanelProps> = ({
       <View style={styles.hintContainer}>
         <Text style={styles.hintText}>
           {isListening
-            ? '正在聆听...'
+            ? t('voice.listening')
             : isProcessing
-            ? '识别中...'
-            : '按住说话'}
+            ? t('voice.processing')
+            : t('voice.holdToSpeak')}
         </Text>
       </View>
 

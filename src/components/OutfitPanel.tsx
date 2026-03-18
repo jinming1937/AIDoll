@@ -9,60 +9,61 @@ import {
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from '../hooks/useTranslation';
 
 const { width, height } = Dimensions.get('window');
 const PANEL_WIDTH = 120; // width * 0.18;
 const SUB_PANEL_WIDTH = 120;
 
 // 装扮分类
-const CATEGORIES = [
-  { key: 'hat', label: '帽子', icon: 'glasses-outline' },
-  { key: 'hair', label: '头发', icon: 'woman-outline' },
-  { key: 'top', label: '上衣', icon: 'shirt-outline' },
-  { key: 'bottom', label: '下装', icon: 'analytics-outline' },
-  { key: 'shoes', label: '鞋子', icon: 'footsteps-outline' },
+const getCategories = (t: (key: string) => string) => [
+  { key: 'hat', label: t('outfit.hat'), icon: 'glasses-outline' },
+  { key: 'hair', label: t('outfit.hair'), icon: 'woman-outline' },
+  { key: 'top', label: t('outfit.top'), icon: 'shirt-outline' },
+  { key: 'bottom', label: t('outfit.bottom'), icon: 'analytics-outline' },
+  { key: 'shoes', label: t('outfit.shoes'), icon: 'footsteps-outline' },
 ] as const;
 
 // 示例装扮数据
-const OUTFITS: Record<string, Array<{ id: string; name: string; color: string }>> = {
+const getOutfits = (t: (key: string) => string): Record<string, Array<{ id: string; name: string; color: string }>> => ({
   hat: [
-    { id: 'hat1', name: '贝雷帽', color: '#8B4513' },
-    { id: 'hat2', name: '草帽', color: '#DEB887' },
-    { id: 'hat3', name: '礼帽', color: '#2C1810' },
-    { id: 'hat4', name: '鸭舌帽', color: '#4A4A4A' },
-    { id: 'hat5', name: '无', color: 'transparent' },
+    { id: 'hat1', name: 'Beret', color: '#8B4513' },
+    { id: 'hat2', name: 'Straw Hat', color: '#DEB887' },
+    { id: 'hat3', name: 'Top Hat', color: '#2C1810' },
+    { id: 'hat4', name: 'Cap', color: '#4A4A4A' },
+    { id: 'hat5', name: t('outfit.none'), color: 'transparent' },
   ],
   hair: [
-    { id: 'hair1', name: '长卷发', color: '#2C1810' },
-    { id: 'hair2', name: '短发', color: '#2C1810' },
-    { id: 'hair3', name: '马尾', color: '#2C1810' },
-    { id: 'hair4', name: '双马尾', color: '#2C1810' },
-    { id: 'hair5', name: '丸子头', color: '#2C1810' },
+    { id: 'hair1', name: 'Long Curly', color: '#2C1810' },
+    { id: 'hair2', name: 'Short', color: '#2C1810' },
+    { id: 'hair3', name: 'Ponytail', color: '#2C1810' },
+    { id: 'hair4', name: 'Twin Tails', color: '#2C1810' },
+    { id: 'hair5', name: 'Bun', color: '#2C1810' },
   ],
   top: [
-    { id: 'top1', name: '旗袍', color: '#C41E3A' },
-    { id: 'top2', name: 'T恤', color: '#FF69B4' },
-    { id: 'top3', name: '衬衫', color: '#FFFFFF' },
-    { id: 'top4', name: '毛衣', color: '#FFB6C1' },
-    { id: 'top5', name: '外套', color: '#9370DB' },
+    { id: 'top1', name: 'Qipao', color: '#C41E3A' },
+    { id: 'top2', name: 'T-Shirt', color: '#FF69B4' },
+    { id: 'top3', name: 'Shirt', color: '#FFFFFF' },
+    { id: 'top4', name: 'Sweater', color: '#FFB6C1' },
+    { id: 'top5', name: 'Jacket', color: '#9370DB' },
   ],
   bottom: [
-    { id: 'bottom1', name: '长裙', color: '#FF1493' },
-    { id: 'bottom2', name: '短裙', color: '#FF69B4' },
-    { id: 'bottom3', name: '裤子', color: '#4A4A4A' },
-    { id: 'bottom4', name: '短裤', color: '#87CEEB' },
-    { id: 'bottom5', name: '无', color: 'transparent' },
+    { id: 'bottom1', name: 'Long Skirt', color: '#FF1493' },
+    { id: 'bottom2', name: 'Short Skirt', color: '#FF69B4' },
+    { id: 'bottom3', name: 'Pants', color: '#4A4A4A' },
+    { id: 'bottom4', name: 'Shorts', color: '#87CEEB' },
+    { id: 'bottom5', name: t('outfit.none'), color: 'transparent' },
   ],
   shoes: [
-    { id: 'shoes1', name: '高跟鞋', color: '#8B0000' },
-    { id: 'shoes2', name: '运动鞋', color: '#FFFFFF' },
-    { id: 'shoes3', name: '靴子', color: '#2C1810' },
-    { id: 'shoes4', name: '凉鞋', color: '#DEB887' },
-    { id: 'shoes5', name: '平底鞋', color: '#FF69B4' },
+    { id: 'shoes1', name: 'High Heels', color: '#8B0000' },
+    { id: 'shoes2', name: 'Sneakers', color: '#FFFFFF' },
+    { id: 'shoes3', name: 'Boots', color: '#2C1810' },
+    { id: 'shoes4', name: 'Sandals', color: '#DEB887' },
+    { id: 'shoes5', name: 'Flats', color: '#FF69B4' },
   ],
-};
+});
 
-export type CategoryKey = typeof CATEGORIES[number]['key'];
+export type CategoryKey = 'hat' | 'hair' | 'top' | 'bottom' | 'shoes';
 
 export interface OutfitPanelRef {
   toggle: () => void;
@@ -83,6 +84,7 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
     bottom: 'bottom1',
     shoes: 'shoes1',
   });
+  const { t } = useTranslation();
 
   // 分类列表动画
   const categoryPanelAnim = useState(new Animated.Value(-PANEL_WIDTH))[0];
@@ -191,7 +193,7 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
           ]}
         >
           <ScrollView style={styles.categoryList} showsVerticalScrollIndicator={false}>
-            {CATEGORIES.map((category) => (
+            {getCategories(t).map((category) => (
               <TouchableOpacity
                 key={category.key}
                 style={styles.categoryItem}
@@ -214,14 +216,14 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
         >
           <View style={styles.subPanelHeader}>
             <Text style={styles.subPanelTitle}>
-              {CATEGORIES.find(c => c.key === selectedCategory)?.label}
+              {getCategories(t).find(c => c.key === selectedCategory)?.label}
             </Text>
             <TouchableOpacity onPress={closeSubPanel}>
               <Ionicons name="arrow-back" size={24} color="#333" />
             </TouchableOpacity>
           </View>
           <ScrollView style={styles.outfitList} showsVerticalScrollIndicator={false}>
-            {OUTFITS[selectedCategory]?.map((outfit) => (
+            {getOutfits(t)[selectedCategory]?.map((outfit) => (
               <TouchableOpacity
                 key={outfit.id}
                 style={[

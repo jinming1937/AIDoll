@@ -18,6 +18,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.yourcompany.aidoll",
       "buildNumber": "1.0.0",
+      "newArchEnabled": false,
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app uses the microphone for voice input to chat with the AI doll.",
         "NSSpeechRecognitionUsageDescription": "This app uses speech recognition to convert your voice to text."
@@ -30,6 +31,7 @@
       },
       "package": "com.yourcompany.aidoll",
       "versionCode": 1,
+      "newArchEnabled": false,
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.INTERNET"

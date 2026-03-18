@@ -44,19 +44,19 @@ const getDefaultConfig = (gender: Gender = 'female'): DollConfig => {
 };
 
 // 女性性格选项
-export const FEMALE_PERSONALITIES: { key: Personality; label: string; icon: string }[] = [
-  { key: 'cute', label: '可爱', icon: 'heart' },
-  { key: 'intellectual', label: '知性', icon: 'book' },
-  { key: 'playful', label: '调皮', icon: 'happy' },
-  { key: 'elegant', label: '优雅', icon: 'flower' },
+export const FEMALE_PERSONALITIES: { key: Personality; icon: string }[] = [
+  { key: 'cute', icon: 'heart' },
+  { key: 'intellectual', icon: 'book' },
+  { key: 'playful', icon: 'happy' },
+  { key: 'elegant', icon: 'flower' },
 ];
 
 // 男性性格选项
-export const MALE_PERSONALITIES: { key: Personality; label: string; icon: string }[] = [
-  { key: 'cheerful', label: '爽朗', icon: 'sunny' },
-  { key: 'masculine', label: '阳刚', icon: 'fitness' },
-  { key: 'mature', label: '成熟', icon: 'business' },
-  { key: 'humorous', label: '幽默', icon: 'happy' },
+export const MALE_PERSONALITIES: { key: Personality; icon: string }[] = [
+  { key: 'cheerful', icon: 'sunny' },
+  { key: 'masculine', icon: 'fitness' },
+  { key: 'mature', icon: 'business' },
+  { key: 'humorous', icon: 'happy' },
 ];
 
 // 获取对应性别的性格列表

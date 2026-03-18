@@ -33,9 +33,9 @@ interface SettingsScreenProps {
 }
 
 // 性别选项
-const GENDER_OPTIONS: { key: Gender; label: string; icon: string }[] = [
-  { key: 'female', label: '女', icon: 'female' },
-  { key: 'male', label: '男', icon: 'male' },
+const getGenderOptions = (t: (key: string) => string): { key: Gender; label: string; icon: string }[] => [
+  { key: 'female', label: t('settings.female'), icon: 'female' },
+  { key: 'male', label: t('settings.male'), icon: 'male' },
 ];
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
@@ -91,7 +91,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('权限 needed', '需要访问相册权限来选择图片');
+      Alert.alert(t('settings.permissionRequired'), t('settings.galleryPermission'));
       return;
     }
 
@@ -112,7 +112,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const takePhoto = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('权限 needed', '需要相机权限来拍照');
+      Alert.alert(t('settings.permissionRequired'), t('settings.cameraPermission'));
       return;
     }
 
@@ -130,10 +130,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   };
 
   const removeImage = () => {
-    Alert.alert('移除图片', '确定要移除自定义图片吗？', [
-      { text: '取消', style: 'cancel' },
+    Alert.alert(t('settings.removeImage'), t('settings.removeImageConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
       {
-        text: '确定',
+        text: t('common.confirm'),
         onPress: () => {
           setLocalConfig({ ...localConfig, imageUri: null });
           setImageUri(null);
@@ -144,13 +144,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
   const showImageOptions = () => {
     Alert.alert(
-      '选择人偶图片',
-      '请选择图片来源',
+      t('settings.selectImageSource'),
+      t('settings.imageSourceHint'),
       [
-        { text: '从相册选择', onPress: pickImage },
-        { text: '拍照', onPress: takePhoto },
-        localConfig.imageUri ? { text: '移除图片', onPress: removeImage, style: 'destructive' } : null,
-        { text: '取消', style: 'cancel' },
+        { text: t('settings.fromGallery'), onPress: pickImage },
+        { text: t('settings.takePhoto'), onPress: takePhoto },
+        localConfig.imageUri ? { text: t('settings.removeImage'), onPress: removeImage, style: 'destructive' } : null,
+        { text: t('common.cancel'), style: 'cancel' },
       ].filter(Boolean) as any
     );
   };
@@ -209,7 +209,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Image Upload Section */}
         <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
-          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>人物图片</Text>
+          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('settings.imageUpload')}</Text>
           <TouchableOpacity
             style={[styles.imageUploadContainer, { borderColor: themeColors.primary }]}
             onPress={showImageOptions}
@@ -223,7 +223,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
             ) : (
               <View style={[styles.uploadPlaceholder, { backgroundColor: themeColors.background }]}>
                 <Ionicons name="camera" size={40} color={themeColors.primary} />
-                <Text style={[styles.uploadPlaceholderText, { color: themeColors.primary }]}>点击上传人偶图片</Text>
+                <Text style={[styles.uploadPlaceholderText, { color: themeColors.primary }]}>{t('settings.uploadHint')}</Text>
               </View>
             )}
             <View style={styles.editOverlay}>
@@ -251,9 +251,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
         {/* Gender Section */}
         <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
-          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>性别</Text>
+          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('settings.gender')}</Text>
           <View style={styles.genderGrid}>
-            {GENDER_OPTIONS.map((gender) => (
+            {getGenderOptions(t).map((gender) => (
               <TouchableOpacity
                 key={gender.key}
                 style={[
@@ -283,7 +283,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
         {/* Personality Section */}
         <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
-          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>性格</Text>
+          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('settings.personality')}</Text>
           <View style={styles.personalityGrid}>
             {personalities.map((p) => (
               <TouchableOpacity
@@ -308,7 +308,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     { color: themeColors.primary }
                   ]}
                 >
-                  {p.label}
+                  {t(`settings.personalities.${p.key}`)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -337,7 +337,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
         {/* Theme Settings */}
         <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
-          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>主题设置</Text>
+          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('settings.theme')}</Text>
           <View style={styles.themeGrid}>
             {THEME_OPTIONS.map((themeOption) => (
               <TouchableOpacity
@@ -354,7 +354,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                   styles.themeLabel,
                   { color: theme === themeOption.key ? themeColors.primary : themeColors.text }
                 ]}>
-                  {themeOption.label}
+                  {t(`themes.${themeOption.key}`)}
                 </Text>
                 {theme === themeOption.key && (
                   <Ionicons name="checkmark-circle" size={20} color={themeColors.primary} style={styles.themeCheckmark} />

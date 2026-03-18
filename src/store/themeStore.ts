@@ -58,11 +58,11 @@ export const THEME_COLORS: Record<ThemeType, ThemeColors> = {
 };
 
 // 主题选项
-export const THEME_OPTIONS: { key: ThemeType; label: string; color: string }[] = [
-  { key: 'pink', label: '粉色', color: '#FF69B4' },
-  { key: 'blue', label: '蓝色', color: '#4A90D9' },
-  { key: 'black', label: '黑色', color: '#2C3E50' },
-  { key: 'white', label: '白色', color: '#808080' },
+export const THEME_OPTIONS: { key: ThemeType; color: string }[] = [
+  { key: 'pink', color: '#FF69B4' },
+  { key: 'blue', color: '#4A90D9' },
+  { key: 'black', color: '#2C3E50' },
+  { key: 'white', color: '#808080' },
 ];
 
 export const useThemeStore = create<ThemeState>()(

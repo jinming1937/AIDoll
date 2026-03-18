@@ -9,6 +9,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import VoiceService from '../services/voiceService';
 import { useChatStore } from '../store/chatStore';
+import { useTranslation } from '../hooks/useTranslation';
 
 const { width } = Dimensions.get('window');
 const BUTTON_SIZE = 80;
@@ -20,10 +21,11 @@ interface VoiceButtonProps {
 const VoiceButton: React.FC<VoiceButtonProps> = ({ onVoiceResult }) => {
   const [isPressed, setIsPressed] = useState(false);
   const { setVoiceState } = useChatStore();
-  
+  const { t } = useTranslation();
+
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  
+
   const voiceServiceRef = useRef<VoiceService | null>(null);
 
   useEffect(() => {
@@ -88,7 +90,7 @@ const VoiceButton: React.FC<VoiceButtonProps> = ({ onVoiceResult }) => {
     } catch (error) {
       console.error('Failed to start listening:', error);
       setIsPressed(false);
-      setVoiceState({ isListening: false, isProcessing: false, error: '无法启动语音识别' });
+      setVoiceState({ isListening: false, isProcessing: false, error: t('voice.startFailed') });
     }
   };
 

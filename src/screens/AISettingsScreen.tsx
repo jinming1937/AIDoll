@@ -55,16 +55,22 @@ const getProviders = (t: (key: string) => string) => [
   },
 ];
 
-const TTS_MODELS: { key: TTSModel; name: string; description: string }[] = [
+const getTTSDescription = (key: TTSModel, t: (key: string) => string): string => {
+  const descriptions: Record<TTSModel, string> = {
+    'qwen3-tts-instruct-flash': t('aiSettings.ttsInstructDesc') || '支持指令控制的TTS模型，更自然',
+    'qwen3-tts-flash': t('aiSettings.ttsStandardDesc') || '标准TTS模型',
+  };
+  return descriptions[key];
+};
+
+const TTS_MODELS: { key: TTSModel; name: string }[] = [
   {
     key: 'qwen3-tts-instruct-flash',
     name: 'qwen3-tts-instruct-flash',
-    description: '支持指令控制的TTS模型，更自然',
   },
   {
     key: 'qwen3-tts-flash',
     name: 'qwen3-tts-flash',
-    description: '标准TTS模型',
   },
 ];
 
@@ -269,10 +275,10 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
 
         {/* TTS Model Selection */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>语音模型设置</Text>
+          <Text style={styles.sectionTitle}>{t('aiSettings.ttsSettings')}</Text>
           
           {/* TTS Model Selection */}
-          <Text style={styles.subSectionLabel}>选择语音模型</Text>
+          <Text style={styles.subSectionLabel}>{t('aiSettings.selectTTSModel')}</Text>
           <View style={styles.ttsModelContainer}>
             {TTS_MODELS.map((ttsModel) => (
               <TouchableOpacity
@@ -297,7 +303,7 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
                   )}
                 </View>
                 <Text style={styles.ttsModelDescription}>
-                  {ttsModel.description}
+                  {getTTSDescription(ttsModel.key, t)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -305,14 +311,14 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
 
           {/* TTS API Key Input (Optional) */}
           <Text style={[styles.subSectionLabel, { marginTop: 16 }]}>
-            语音模型 API Key（可选，默认使用AI模型Key）
+            {t('aiSettings.ttsApiKey')}
           </Text>
           <View style={styles.apiKeyContainer}>
             <TextInput
               style={styles.apiKeyInput}
               value={config.ttsApiKey}
               onChangeText={(text) => setConfig({ ...config, ttsApiKey: text })}
-              placeholder="输入语音模型专用API Key（可选）"
+              placeholder={t('aiSettings.ttsApiKeyPlaceholder')}
               placeholderTextColor="#999"
               secureTextEntry={!showTTSApiKey}
               autoCapitalize="none"
