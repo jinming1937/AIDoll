@@ -21,7 +21,7 @@ interface DollCharacterProps {
 
 const DollCharacter: React.FC<DollCharacterProps> = ({ scale = 1 }) => {
   const { config, currentAnimation } = useDollStore();
-  
+
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const waveAnim = useRef(new Animated.Value(0)).current;
@@ -202,7 +202,7 @@ const DollCharacter: React.FC<DollCharacterProps> = ({ scale = 1 }) => {
 
   return (
     <Animated.View style={[styles.container, { transform: [{ scale }] }, animatedStyle]}>
-      <Svg width={DOLL_SIZE} height={DOLL_SIZE} viewBox="0 0 200 300">
+      <Svg width={DOLL_SIZE} height={DOLL_SIZE} viewBox="0 0 200 320">
         <Defs>
           <LinearGradient id="hairGradient" x1="0%" y1="0%" x2="0%" y2="100%">
             <Stop offset="0%" stopColor={config.hairColor} />
@@ -218,121 +218,171 @@ const DollCharacter: React.FC<DollCharacterProps> = ({ scale = 1 }) => {
           </LinearGradient>
         </Defs>
 
-        {/* Back Hair */}
+        {/* Back Hair - Long wavy hair */}
         <Path
-          d="M50 80 Q30 150 40 200 Q50 220 100 220 Q150 220 160 200 Q170 150 150 80"
+          d="M40 70 Q20 120 25 180 Q30 220 40 260 Q50 280 100 280 Q150 280 160 260 Q170 220 175 180 Q180 120 160 70"
           fill="url(#hairGradient)"
         />
 
-        {/* Body/Dress */}
+        {/* Body/Qipao (Cheongsam) */}
         <Path
-          d="M70 140 L50 280 Q100 300 150 280 L130 140 Z"
+          d="M75 145 L60 300 Q100 315 140 300 L125 145 Z"
           fill="url(#outfitGradient)"
+        />
+
+        {/* Qipao collar (mandarin collar) */}
+        <Path
+          d="M85 145 L100 165 L115 145 L115 135 Q100 140 85 135 Z"
+          fill={config.outfitColor}
+          stroke="#8B0000"
+          strokeWidth="1"
+        />
+
+        {/* Qipao frog buttons (盘扣) */}
+        <Circle cx="95" cy="170" r="4" fill="#8B0000" />
+        <Circle cx="95" cy="185" r="4" fill="#8B0000" />
+        <Circle cx="95" cy="200" r="4" fill="#8B0000" />
+
+        {/* Qipao side slit detail */}
+        <Path
+          d="M125 220 L125 280"
+          stroke="#8B0000"
+          strokeWidth="2"
+          fill="none"
         />
 
         {/* Left Arm */}
         <AnimatedG style={armStyle}>
           <Path
-            d="M70 150 Q40 180 35 220"
+            d="M75 155 Q45 190 40 235"
             stroke={config.skinColor}
-            strokeWidth="12"
+            strokeWidth="11"
             fill="none"
             strokeLinecap="round"
           />
-          <Circle cx="35" cy="225" r="8" fill={config.skinColor} />
+          <Circle cx="40" cy="240" r="7" fill={config.skinColor} />
         </AnimatedG>
 
         {/* Right Arm */}
         <AnimatedG style={armStyle}>
           <Path
-            d="M130 150 Q160 180 165 220"
+            d="M125 155 Q155 190 160 235"
             stroke={config.skinColor}
+            strokeWidth="11"
+            fill="none"
+            strokeLinecap="round"
+          />
+          <Circle cx="160" cy="240" r="7" fill={config.skinColor} />
+        </AnimatedG>
+
+        {/* Neck */}
+        <Rect x="88" y="125" width="24" height="25" fill={config.skinColor} />
+
+        {/* Head Group */}
+        <AnimatedG style={headStyle}>
+          {/* Face - oval shape */}
+          <Ellipse cx="100" cy="85" rx="50" ry="58" fill="url(#skinGradient)" />
+
+          {/* Blush - subtle */}
+          <Ellipse cx="68" cy="98" rx="10" ry="7" fill="#FFB6C1" opacity="0.5" />
+          <Ellipse cx="132" cy="98" rx="10" ry="7" fill="#FFB6C1" opacity="0.5" />
+
+          {/* Eyes - gentle almond shape */}
+          <G>
+            {/* Left Eye */}
+            <Ellipse cx="78" cy="78" rx="11" ry="13" fill="white" />
+            <Circle cx="78" cy="78" r="7" fill={config.eyeColor} />
+            <Circle cx="78" cy="78" r="3.5" fill="black" />
+            <Circle cx="80" cy="75" r="2.5" fill="white" />
+
+            {/* Right Eye */}
+            <Ellipse cx="122" cy="78" rx="11" ry="13" fill="white" />
+            <Circle cx="122" cy="78" r="7" fill={config.eyeColor} />
+            <Circle cx="122" cy="78" r="3.5" fill="black" />
+            <Circle cx="124" cy="75" r="2.5" fill="white" />
+          </G>
+
+          {/* Eyelashes */}
+          <Path
+            d="M65 70 Q78 62 91 70"
+            stroke="#333"
+            strokeWidth="1.5"
+            fill="none"
+          />
+          <Path
+            d="M109 70 Q122 62 135 70"
+            stroke="#333"
+            strokeWidth="1.5"
+            fill="none"
+          />
+
+          {/* Eyebrows - elegant arch */}
+          <Path
+            d="M68 58 Q78 52 88 58"
+            stroke="#5D4E37"
+            strokeWidth="2"
+            fill="none"
+          />
+          <Path
+            d="M112 58 Q122 52 132 58"
+            stroke="#5D4E37"
+            strokeWidth="2"
+            fill="none"
+          />
+
+          {/* Glasses - round frames */}
+          <G>
+            {/* Left lens frame */}
+            <Ellipse cx="78" cy="80" rx="18" ry="16" stroke="#4A4A4A" strokeWidth="2.5" fill="none" />
+            {/* Right lens frame */}
+            <Ellipse cx="122" cy="80" rx="18" ry="16" stroke="#4A4A4A" strokeWidth="2.5" fill="none" />
+            {/* Bridge */}
+            <Path d="M96 80 Q100 75 104 80" stroke="#4A4A4A" strokeWidth="2" fill="none" />
+            {/* Temple arms */}
+            <Path d="M60 78 L55 75" stroke="#4A4A4A" strokeWidth="2" fill="none" />
+            <Path d="M140 78 L145 75" stroke="#4A4A4A" strokeWidth="2" fill="none" />
+          </G>
+
+          {/* Nose */}
+          <Path
+            d="M100 88 L98 96 L102 96 Z"
+            fill="#E8B4B4"
+          />
+
+          {/* Mouth - gentle smile */}
+          <Path
+            d="M88 108 Q100 116 112 108"
+            stroke="#E07A7A"
+            strokeWidth="2.5"
+            fill="none"
+            strokeLinecap="round"
+          />
+
+          {/* Front Hair - Wavy bangs and sides */}
+          <Path
+            d="M35 65 Q50 35 100 30 Q150 35 165 65 Q160 55 140 50 Q120 45 100 48 Q80 45 60 50 Q40 55 35 65"
+            fill="url(#hairGradient)"
+          />
+
+          {/* Side hair strands */}
+          <Path
+            d="M50 60 Q45 90 48 120"
+            stroke={config.hairColor}
             strokeWidth="12"
             fill="none"
             strokeLinecap="round"
           />
-          <Circle cx="165" cy="225" r="8" fill={config.skinColor} />
-        </AnimatedG>
-
-        {/* Neck */}
-        <Rect x="85" y="120" width="30" height="25" fill={config.skinColor} />
-
-        {/* Head Group */}
-        <AnimatedG style={headStyle}>
-          {/* Face */}
-          <Ellipse cx="100" cy="80" rx="55" ry="60" fill="url(#skinGradient)" />
-
-          {/* Blush */}
-          <Ellipse cx="65" cy="95" rx="12" ry="8" fill="#FFB6C1" opacity="0.6" />
-          <Ellipse cx="135" cy="95" rx="12" ry="8" fill="#FFB6C1" opacity="0.6" />
-
-          {/* Eyes */}
-          <G>
-            {/* Left Eye */}
-            <Ellipse cx="75" cy="75" rx="12" ry="15" fill="white" />
-            <Circle cx="75" cy="75" r="8" fill={config.eyeColor} />
-            <Circle cx="75" cy="75" r="4" fill="black" />
-            <Circle cx="78" cy="72" r="3" fill="white" />
-
-            {/* Right Eye */}
-            <Ellipse cx="125" cy="75" rx="12" ry="15" fill="white" />
-            <Circle cx="125" cy="75" r="8" fill={config.eyeColor} />
-            <Circle cx="125" cy="75" r="4" fill="black" />
-            <Circle cx="128" cy="72" r="3" fill="white" />
-          </G>
-
-          {/* Eyelashes ok */}
           <Path
-            d="M60 65 Q75 55 90 65"
-            stroke="#333"
-            strokeWidth="2"
-            fill="none"
-          />
-          <Path
-            d="M110 65 Q125 55 140 65"
-            stroke="#333"
-            strokeWidth="2"
-            fill="none"
-          />
-
-          {/* Eyebrows */}
-          <Path
-            d="M65 55 Q75 50 85 55"
-            stroke="#8B4513"
-            strokeWidth="2"
-            fill="none"
-          />
-          <Path
-            d="M115 55 Q125 50 135 55"
-            stroke="#8B4513"
-            strokeWidth="2"
-            fill="none"
-          />
-
-          {/* Nose */}
-          <Path
-            d="M100 85 L98 95 L102 95 Z"
-            fill="#E8B4B4"
-          />
-
-          {/* Mouth */}
-          <Path
-            d="M85 105 Q100 115 115 105"
-            stroke="#FF6B6B"
-            strokeWidth="3"
+            d="M150 60 Q155 90 152 120"
+            stroke={config.hairColor}
+            strokeWidth="12"
             fill="none"
             strokeLinecap="round"
           />
 
-          {/* Front Hair - Bangs */}
-          <Path
-            d="M45 60 Q60 30 100 25 Q140 30 155 60 Q150 50 130 45 Q100 50 70 45 Q50 50 45 60"
-            fill="url(#hairGradient)"
-          />
-
-          {/* Hair accessories */}
-          <Circle cx="50" cy="70" r="8" fill="#FF1493" />
-          <Circle cx="150" cy="70" r="8" fill="#FF1493" />
+          {/* Small pearl earrings */}
+          <Circle cx="52" cy="95" r="4" fill="#FFF8DC" />
+          <Circle cx="148" cy="95" r="4" fill="#FFF8DC" />
         </AnimatedG>
       </Svg>
     </Animated.View>

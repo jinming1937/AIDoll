@@ -93,6 +93,67 @@ class AIService {
     await this.saveConfig();
   }
 
+  // 测试API连接
+  async testConnection(): Promise<{ success: boolean; message: string }> {
+    if (!this.config.apiKey) {
+      return { success: false, message: '请先输入API Key' };
+    }
+
+    try {
+      const apiUrl = API_CONFIG[this.config.provider].url;
+      const model = this.config.model || API_CONFIG[this.config.provider].model;
+
+      const response = await axios.post(
+        apiUrl,
+        {
+          model,
+          messages: [{ role: 'user', content: 'Hello' }],
+          temperature: 0.8,
+          max_tokens: 10,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${this.config.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        }
+      );
+
+      if (response.status === 200 && response.data.choices) {
+        return { success: true, message: '连接成功！API配置正确。' };
+      }
+
+      return { success: false, message: '连接失败：响应格式异常' };
+    } catch (error: any) {
+      console.error('Test connection error:', error);
+
+      // 处理不同类型的错误
+      if (error.response) {
+        const status = error.response.status;
+        const errorData = error.response.data;
+
+        if (status === 401) {
+          return { success: false, message: '连接失败：API Key 无效或已过期，请检查您的 API Key。' };
+        } else if (status === 429) {
+          return { success: false, message: '连接失败：请求过于频繁，请稍后再试。' };
+        } else if (status === 404) {
+          return { success: false, message: '连接失败：模型不存在，请检查模型名称是否正确。' };
+        } else if (errorData?.error?.message) {
+          return { success: false, message: `连接失败：${errorData.error.message}` };
+        } else {
+          return { success: false, message: `连接失败：HTTP ${status} 错误` };
+        }
+      } else if (error.request) {
+        return { success: false, message: '连接失败：网络请求无响应，请检查网络连接。' };
+      } else if (error.code === 'ECONNABORTED') {
+        return { success: false, message: '连接失败：请求超时，请检查网络连接。' };
+      } else {
+        return { success: false, message: `连接失败：${error.message || '未知错误'}` };
+      }
+    }
+  }
+
   async sendMessage(
     message: string,
     dollConfig: DollConfig,

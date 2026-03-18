@@ -61,6 +61,7 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
   });
   const [showApiKey, setShowApiKey] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
 
   const PROVIDERS = getProviders(t);
 
@@ -243,20 +244,38 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
 
         {/* Test Connection */}
         <TouchableOpacity
-          style={styles.testButton}
-          onPress={() => {
+          style={[styles.testButton, isTesting && styles.testButtonDisabled]}
+          onPress={async () => {
             if (!config.apiKey) {
-              Alert.alert(t('common.confirm'), t('messages.enterApiKey'));
+              Alert.alert(t('common.error'), t('messages.enterApiKey'));
               return;
             }
-            Alert.alert(
-              t('aiSettings.testConnection'),
-              t('aiSettings.note.content')
-            );
+            setIsTesting(true);
+            try {
+              // 先保存当前配置
+              await aiService.setConfig(config);
+              const result = await aiService.testConnection();
+              Alert.alert(
+                result.success ? t('common.success') : t('common.error'),
+                result.message,
+                [{ text: t('common.confirm'), style: 'default' }]
+              );
+            } catch (error) {
+              Alert.alert(
+                t('common.error'),
+                t('messages.testConnectionFailed'),
+                [{ text: t('common.confirm'), style: 'default' }]
+              );
+            } finally {
+              setIsTesting(false);
+            }
           }}
+          disabled={isTesting}
         >
-          <Ionicons name="flash" size={20} color="#FF69B4" />
-          <Text style={styles.testButtonText}>{t('aiSettings.testConnection')}</Text>
+          <Ionicons name={isTesting ? 'hourglass' : 'flash'} size={20} color="#FF69B4" />
+          <Text style={styles.testButtonText}>
+            {isTesting ? t('common.testing') : t('aiSettings.testConnection')}
+          </Text>
         </TouchableOpacity>
 
         {/* Note */}
@@ -445,6 +464,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
+  },
+  testButtonDisabled: {
+    backgroundColor: '#F5F5F5',
+    opacity: 0.7,
   },
   testButtonText: {
     marginLeft: 8,

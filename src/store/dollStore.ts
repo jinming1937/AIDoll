@@ -12,12 +12,12 @@ interface DollState {
 }
 
 const defaultConfig: DollConfig = {
-  name: 'Luna',
-  hairColor: '#FFD700',
-  skinColor: '#FFE4D6',
-  eyeColor: '#4A90D9',
-  outfitColor: '#FF69B4',
-  personality: 'cute',
+  name: '诗雅',
+  hairColor: '#2C1810',
+  skinColor: '#FFF0E6',
+  eyeColor: '#5D4E37',
+  outfitColor: '#C41E3A',
+  personality: 'elegant',
 };
 
 export const useDollStore = create<DollState>()(
