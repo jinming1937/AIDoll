@@ -32,12 +32,21 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
 
 # typescript
 *.tsbuildinfo
 
-app-example
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 
-# generated native folders
-/ios
-/android
+# EAS
+.eas/
+
+# Build artifacts
+*.apk
+*.aab
+*.ipa
