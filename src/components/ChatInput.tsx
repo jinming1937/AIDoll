@@ -24,7 +24,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
   disabled = false,
 }) => {
   const [text, setText] = useState('');
-  const { getThemeColors } = useThemeStore();
+  const { theme, getThemeColors } = useThemeStore();
   const themeColors = getThemeColors();
   const { t } = useTranslation();
 

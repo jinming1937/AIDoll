@@ -15,7 +15,7 @@ interface DollState {
 }
 
 // 女性默认配置
-const femaleDefaultConfig: DollConfig = {
+export const femaleDefaultConfig: DollConfig = {
   name: '诗雅',
   gender: 'female',
   hairColor: '#2C1810',
@@ -27,7 +27,7 @@ const femaleDefaultConfig: DollConfig = {
 };
 
 // 男性默认配置
-const maleDefaultConfig: DollConfig = {
+export const maleDefaultConfig: DollConfig = {
   name: '浩然',
   gender: 'male',
   hairColor: '#1A1A1A',

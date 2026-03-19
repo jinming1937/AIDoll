@@ -18,7 +18,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, dollName }) => {
   const isUser = message.isUser;
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const { getThemeColors } = useThemeStore();
+  const { theme, getThemeColors } = useThemeStore();
   const themeColors = getThemeColors();
   
   // 获取音频缓存和人物配置

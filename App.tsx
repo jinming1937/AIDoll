@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -7,6 +7,8 @@ import HomeScreen from './src/screens/HomeScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import AISettingsScreen from './src/screens/AISettingsScreen';
 import LanguageSettingsScreen from './src/screens/LanguageSettingsScreen';
+import { audioService } from './src/services/audioService';
+import { useAudioStore } from './src/store/audioStore';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -18,6 +20,12 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
+  const { volume, isMuted } = useAudioStore((state) => state);
+  // 监听音量变化
+  useEffect(() => {
+    audioService.updateVolume();
+  }, [volume, isMuted]);
+  
   return (
     <SafeAreaProvider>
       <NavigationContainer>
