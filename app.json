@@ -5,61 +5,41 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#FF69B4"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "scheme": "doll",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.aidoll",
-      "buildNumber": "1.0.0",
-      "newArchEnabled": false,
-      "infoPlist": {
-        "NSMicrophoneUsageDescription": "This app uses the microphone for voice input to chat with the AI doll.",
-        "NSSpeechRecognitionUsageDescription": "This app uses speech recognition to convert your voice to text."
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FF69B4"
       },
-      "package": "com.yourcompany.aidoll",
-      "versionCode": 1,
-      "newArchEnabled": false,
-      "permissions": [
-        "android.permission.RECORD_AUDIO",
-        "android.permission.INTERNET"
-      ]
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "backgroundColor": "#000000"
+          }
+        }
+      ],
       [
         "expo-av",
         {
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone for voice input."
-        }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "compileSdkVersion": 34,
-            "targetSdkVersion": 34,
-            "buildToolsVersion": "34.0.0",
-            "kotlinVersion": "1.9.24"
-          },
-          "ios": {
-            "newArchEnabled": false,
-            "cppFlags": ["-std=c++17"]
-          }
         }
       ]
     ],
@@ -68,6 +48,10 @@
         "projectId": "aa9c8904-d348-41ce-9f22-c209785a9105"
       }
     },
-    "owner": "jinming1937"
+    "owner": "jinming1937",
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
   }
 }
