@@ -1,15 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated, Dimensions } from 'react-native';
-import Svg, {
-  Circle,
-  Ellipse,
-  Path,
-  G,
-  Defs,
-  LinearGradient,
-  Stop,
-  Rect,
-} from 'react-native-svg';
+import { View, StyleSheet, Animated, Dimensions, Image } from 'react-native';
 import { useDollStore } from '../store/dollStore';
 
 const { width } = Dimensions.get('window');
@@ -21,7 +11,7 @@ interface DollCharacterProps {
 
 const DollCharacter: React.FC<DollCharacterProps> = ({ scale = 1 }) => {
   const { config, currentAnimation } = useDollStore();
-  
+
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const waveAnim = useRef(new Animated.Value(0)).current;
@@ -175,11 +165,6 @@ const DollCharacter: React.FC<DollCharacterProps> = ({ scale = 1 }) => {
           outputRange: ['-10deg', '0deg', '10deg'],
         }),
       },
-    ],
-  };
-
-  const headStyle = {
-    transform: [
       {
         rotate: rotateAnim.interpolate({
           inputRange: [-10, 10],
@@ -189,163 +174,94 @@ const DollCharacter: React.FC<DollCharacterProps> = ({ scale = 1 }) => {
     ],
   };
 
-  const armStyle = {
-    transform: [
-      {
-        rotate: waveAnim.interpolate({
-          inputRange: [-1, 0, 1],
-          outputRange: ['-30deg', '0deg', '30deg'],
-        }),
-      },
-    ],
-  };
-
   return (
-    <Animated.View style={[styles.container, { transform: [{ scale }] }, animatedStyle]}>
-      <Svg width={DOLL_SIZE} height={DOLL_SIZE} viewBox="0 0 200 300">
-        <Defs>
-          <LinearGradient id="hairGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <Stop offset="0%" stopColor={config.hairColor} />
-            <Stop offset="100%" stopColor={config.hairColor} stopOpacity={0.8} />
-          </LinearGradient>
-          <LinearGradient id="skinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <Stop offset="0%" stopColor={config.skinColor} />
-            <Stop offset="100%" stopColor={config.skinColor} stopOpacity={0.9} />
-          </LinearGradient>
-          <LinearGradient id="outfitGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <Stop offset="0%" stopColor={config.outfitColor} />
-            <Stop offset="100%" stopColor={config.outfitColor} stopOpacity={0.8} />
-          </LinearGradient>
-        </Defs>
-
-        {/* Back Hair */}
-        <Path
-          d="M50 80 Q30 150 40 200 Q50 220 100 220 Q150 220 160 200 Q170 150 150 80"
-          fill="url(#hairGradient)"
+    <Animated.View
+      style={[
+        styles.container,
+        { transform: [{ scale }] },
+        animatedStyle,
+      ]}
+    >
+      {config.imageUri ? (
+        <Image
+          source={{ uri: config.imageUri }}
+          style={styles.dollImage}
+          resizeMode="contain"
         />
-
-        {/* Body/Dress */}
-        <Path
-          d="M70 140 L50 280 Q100 300 150 280 L130 140 Z"
-          fill="url(#outfitGradient)"
-        />
-
-        {/* Left Arm */}
-        <AnimatedG style={armStyle}>
-          <Path
-            d="M70 150 Q40 180 35 220"
-            stroke={config.skinColor}
-            strokeWidth="12"
-            fill="none"
-            strokeLinecap="round"
-          />
-          <Circle cx="35" cy="225" r="8" fill={config.skinColor} />
-        </AnimatedG>
-
-        {/* Right Arm */}
-        <AnimatedG style={armStyle}>
-          <Path
-            d="M130 150 Q160 180 165 220"
-            stroke={config.skinColor}
-            strokeWidth="12"
-            fill="none"
-            strokeLinecap="round"
-          />
-          <Circle cx="165" cy="225" r="8" fill={config.skinColor} />
-        </AnimatedG>
-
-        {/* Neck */}
-        <Rect x="85" y="120" width="30" height="25" fill={config.skinColor} />
-
-        {/* Head Group */}
-        <AnimatedG style={headStyle}>
-          {/* Face */}
-          <Ellipse cx="100" cy="80" rx="55" ry="60" fill="url(#skinGradient)" />
-
-          {/* Blush */}
-          <Ellipse cx="65" cy="95" rx="12" ry="8" fill="#FFB6C1" opacity="0.6" />
-          <Ellipse cx="135" cy="95" rx="12" ry="8" fill="#FFB6C1" opacity="0.6" />
-
-          {/* Eyes */}
-          <G>
-            {/* Left Eye */}
-            <Ellipse cx="75" cy="75" rx="12" ry="15" fill="white" />
-            <Circle cx="75" cy="75" r="8" fill={config.eyeColor} />
-            <Circle cx="75" cy="75" r="4" fill="black" />
-            <Circle cx="78" cy="72" r="3" fill="white" />
-
-            {/* Right Eye */}
-            <Ellipse cx="125" cy="75" rx="12" ry="15" fill="white" />
-            <Circle cx="125" cy="75" r="8" fill={config.eyeColor} />
-            <Circle cx="125" cy="75" r="4" fill="black" />
-            <Circle cx="128" cy="72" r="3" fill="white" />
-          </G>
-
-          {/* Eyelashes ok */}
-          <Path
-            d="M60 65 Q75 55 90 65"
-            stroke="#333"
-            strokeWidth="2"
-            fill="none"
-          />
-          <Path
-            d="M110 65 Q125 55 140 65"
-            stroke="#333"
-            strokeWidth="2"
-            fill="none"
-          />
-
-          {/* Eyebrows */}
-          <Path
-            d="M65 55 Q75 50 85 55"
-            stroke="#8B4513"
-            strokeWidth="2"
-            fill="none"
-          />
-          <Path
-            d="M115 55 Q125 50 135 55"
-            stroke="#8B4513"
-            strokeWidth="2"
-            fill="none"
-          />
-
-          {/* Nose */}
-          <Path
-            d="M100 85 L98 95 L102 95 Z"
-            fill="#E8B4B4"
-          />
-
-          {/* Mouth */}
-          <Path
-            d="M85 105 Q100 115 115 105"
-            stroke="#FF6B6B"
-            strokeWidth="3"
-            fill="none"
-            strokeLinecap="round"
-          />
-
-          {/* Front Hair - Bangs */}
-          <Path
-            d="M45 60 Q60 30 100 25 Q140 30 155 60 Q150 50 130 45 Q100 50 70 45 Q50 50 45 60"
-            fill="url(#hairGradient)"
-          />
-
-          {/* Hair accessories */}
-          <Circle cx="50" cy="70" r="8" fill="#FF1493" />
-          <Circle cx="150" cy="70" r="8" fill="#FF1493" />
-        </AnimatedG>
-      </Svg>
+      ) : (
+        <View style={styles.placeholderContainer}>
+          <View style={[styles.placeholderBody, { backgroundColor: config.outfitColor }]}>
+            <View style={[styles.placeholderHead, { backgroundColor: config.skinColor }]}>
+              <View style={[styles.placeholderHair, { backgroundColor: config.hairColor }]} />
+              <View style={styles.eyesContainer}>
+                <View style={[styles.placeholderEye, { backgroundColor: config.eyeColor }]} />
+                <View style={[styles.placeholderEye, { backgroundColor: config.eyeColor }]} />
+              </View>
+              <View style={styles.placeholderMouth} />
+            </View>
+          </View>
+        </View>
+      )}
     </Animated.View>
   );
 };
-
-// Helper component for animated G
-const AnimatedG = Animated.createAnimatedComponent(G);
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  dollImage: {
+    width: DOLL_SIZE,
+    height: DOLL_SIZE,
+    borderRadius: 20,
+  },
+  placeholderContainer: {
+    width: DOLL_SIZE,
+    height: DOLL_SIZE,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholderBody: {
+    width: DOLL_SIZE * 0.6,
+    height: DOLL_SIZE * 0.8,
+    borderRadius: DOLL_SIZE * 0.3,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: DOLL_SIZE * 0.1,
+  },
+  placeholderHead: {
+    width: DOLL_SIZE * 0.5,
+    height: DOLL_SIZE * 0.5,
+    borderRadius: DOLL_SIZE * 0.25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  placeholderHair: {
+    position: 'absolute',
+    top: -DOLL_SIZE * 0.05,
+    left: DOLL_SIZE * 0.05,
+    right: DOLL_SIZE * 0.05,
+    height: DOLL_SIZE * 0.15,
+    borderRadius: DOLL_SIZE * 0.075,
+  },
+  eyesContainer: {
+    flexDirection: 'row',
+    gap: DOLL_SIZE * 0.08,
+    marginTop: DOLL_SIZE * 0.05,
+  },
+  placeholderEye: {
+    width: DOLL_SIZE * 0.08,
+    height: DOLL_SIZE * 0.08,
+    borderRadius: DOLL_SIZE * 0.04,
+  },
+  placeholderMouth: {
+    width: DOLL_SIZE * 0.12,
+    height: DOLL_SIZE * 0.04,
+    backgroundColor: '#E07A7A',
+    borderRadius: DOLL_SIZE * 0.02,
+    marginTop: DOLL_SIZE * 0.08,
   },
 });
 

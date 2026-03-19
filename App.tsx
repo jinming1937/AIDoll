@@ -25,7 +25,7 @@ export default function App() {
           initialRouteName="Home"
           screenOptions={{
             headerShown: false,
-            cardStyle: { backgroundColor: '#fff0f5' },
+            cardStyle: { backgroundColor: '#FFF0F5' },
           }}
         >
           <Stack.Screen name="Home" component={HomeScreen} />
@@ -33,24 +33,21 @@ export default function App() {
             name="Settings"
             component={SettingsScreen}
             options={{
-              presentation: 'modal',
-              animationEnabled: true,
+              presentation: 'modal'
             }}
           />
           <Stack.Screen
             name="AISettings"
             component={AISettingsScreen}
             options={{
-              presentation: 'modal',
-              animationEnabled: true,
+              presentation: 'modal'
             }}
           />
           <Stack.Screen
             name="LanguageSettings"
             component={LanguageSettingsScreen}
             options={{
-              presentation: 'modal',
-              animationEnabled: true,
+              presentation: 'modal'
             }}
           />
         </Stack.Navigator>

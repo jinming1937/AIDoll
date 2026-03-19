@@ -28,11 +28,14 @@ interface AISettingsScreenProps {
 }
 
 type AIProvider = 'openai' | 'qwen';
+type TTSModel = 'qwen3-tts-instruct-flash' | 'qwen3-tts-flash';
 
 interface AIConfig {
   provider: AIProvider;
   apiKey: string;
   model?: string;
+  ttsModel?: string;
+  ttsApiKey?: string;
 }
 
 const getProviders = (t: (key: string) => string) => [
@@ -52,15 +55,38 @@ const getProviders = (t: (key: string) => string) => [
   },
 ];
 
+const getTTSDescription = (key: TTSModel, t: (key: string) => string): string => {
+  const descriptions: Record<TTSModel, string> = {
+    'qwen3-tts-instruct-flash': t('aiSettings.ttsInstructDesc') || '支持指令控制的TTS模型，更自然',
+    'qwen3-tts-flash': t('aiSettings.ttsStandardDesc') || '标准TTS模型',
+  };
+  return descriptions[key];
+};
+
+const TTS_MODELS: { key: TTSModel; name: string }[] = [
+  {
+    key: 'qwen3-tts-instruct-flash',
+    name: 'qwen3-tts-instruct-flash',
+  },
+  {
+    key: 'qwen3-tts-flash',
+    name: 'qwen3-tts-flash',
+  },
+];
+
 const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const [config, setConfig] = useState<AIConfig>({
     provider: 'qwen',
     apiKey: '',
     model: 'qwen-turbo',
+    ttsModel: 'qwen3-tts-instruct-flash',
+    ttsApiKey: '',
   });
   const [showApiKey, setShowApiKey] = useState(false);
+  const [showTTSApiKey, setShowTTSApiKey] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
 
   const PROVIDERS = getProviders(t);
 
@@ -70,7 +96,13 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
 
   const loadConfig = () => {
     const currentConfig = aiService.getConfig();
-    setConfig(currentConfig);
+    setConfig({
+      provider: currentConfig.provider || 'qwen',
+      apiKey: currentConfig.apiKey || '',
+      model: currentConfig.model || 'qwen-turbo',
+      ttsModel: currentConfig.ttsModel || 'qwen3-tts-instruct-flash',
+      ttsApiKey: currentConfig.ttsApiKey || '',
+    });
   };
 
   const handleSave = async () => {
@@ -202,7 +234,7 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
               style={styles.apiKeyInput}
               value={config.apiKey}
               onChangeText={(text) => setConfig({ ...config, apiKey: text })}
-              placeholder={t('aiSettings.apiKeyPlaceholder', { provider: selectedProvider?.name })}
+              placeholder={t('aiSettings.apiKeyPlaceholder', { provider: selectedProvider?.name || '' })}
               placeholderTextColor="#999"
               secureTextEntry={!showApiKey}
               autoCapitalize="none"
@@ -241,22 +273,104 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
           ) : null}
         </View>
 
+        {/* TTS Model Selection */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('aiSettings.ttsSettings')}</Text>
+          
+          {/* TTS Model Selection */}
+          <Text style={styles.subSectionLabel}>{t('aiSettings.selectTTSModel')}</Text>
+          <View style={styles.ttsModelContainer}>
+            {TTS_MODELS.map((ttsModel) => (
+              <TouchableOpacity
+                key={ttsModel.key}
+                style={[
+                  styles.ttsModelButton,
+                  config.ttsModel === ttsModel.key && styles.ttsModelButtonSelected,
+                ]}
+                onPress={() => setConfig({ ...config, ttsModel: ttsModel.key })}
+              >
+                <View style={styles.ttsModelHeader}>
+                  <Text
+                    style={[
+                      styles.ttsModelName,
+                      config.ttsModel === ttsModel.key && styles.ttsModelNameSelected,
+                    ]}
+                  >
+                    {ttsModel.name}
+                  </Text>
+                  {config.ttsModel === ttsModel.key && (
+                    <Ionicons name="checkmark-circle" size={20} color="#FF69B4" />
+                  )}
+                </View>
+                <Text style={styles.ttsModelDescription}>
+                  {getTTSDescription(ttsModel.key, t)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* TTS API Key Input (Optional) */}
+          <Text style={[styles.subSectionLabel, { marginTop: 16 }]}>
+            {t('aiSettings.ttsApiKey')}
+          </Text>
+          <View style={styles.apiKeyContainer}>
+            <TextInput
+              style={styles.apiKeyInput}
+              value={config.ttsApiKey}
+              onChangeText={(text) => setConfig({ ...config, ttsApiKey: text })}
+              placeholder={t('aiSettings.ttsApiKeyPlaceholder')}
+              placeholderTextColor="#999"
+              secureTextEntry={!showTTSApiKey}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            <TouchableOpacity
+              style={styles.eyeButton}
+              onPress={() => setShowTTSApiKey(!showTTSApiKey)}
+            >
+              <Ionicons
+                name={showTTSApiKey ? 'eye-off' : 'eye'}
+                size={20}
+                color="#666"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
         {/* Test Connection */}
         <TouchableOpacity
-          style={styles.testButton}
-          onPress={() => {
+          style={[styles.testButton, isTesting && styles.testButtonDisabled]}
+          onPress={async () => {
             if (!config.apiKey) {
-              Alert.alert(t('common.confirm'), t('messages.enterApiKey'));
+              Alert.alert(t('common.error'), t('messages.enterApiKey'));
               return;
             }
-            Alert.alert(
-              t('aiSettings.testConnection'),
-              t('aiSettings.note.content')
-            );
+            setIsTesting(true);
+            try {
+              // 先保存当前配置
+              await aiService.setConfig(config);
+              const result = await aiService.testConnection();
+              Alert.alert(
+                result.success ? t('common.success') : t('common.error'),
+                result.message,
+                [{ text: t('common.confirm'), style: 'default' }]
+              );
+            } catch (error) {
+              Alert.alert(
+                t('common.error'),
+                t('messages.testConnectionFailed'),
+                [{ text: t('common.confirm'), style: 'default' }]
+              );
+            } finally {
+              setIsTesting(false);
+            }
           }}
+          disabled={isTesting}
         >
-          <Ionicons name="flash" size={20} color="#FF69B4" />
-          <Text style={styles.testButtonText}>{t('aiSettings.testConnection')}</Text>
+          <Ionicons name={isTesting ? 'hourglass' : 'flash'} size={20} color="#FF69B4" />
+          <Text style={styles.testButtonText}>
+            {isTesting ? t('common.testing') : t('aiSettings.testConnection')}
+          </Text>
         </TouchableOpacity>
 
         {/* Note */}
@@ -330,6 +444,11 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 12,
   },
+  subSectionLabel: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+  },
   providerCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -385,6 +504,38 @@ const styles = StyleSheet.create({
   modelTextSelected: {
     color: 'white',
     fontWeight: '600',
+  },
+  ttsModelContainer: {
+    gap: 10,
+  },
+  ttsModelButton: {
+    padding: 16,
+    backgroundColor: '#F8F8F8',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  ttsModelButtonSelected: {
+    borderColor: '#FF69B4',
+    backgroundColor: '#FFF0F5',
+  },
+  ttsModelHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  ttsModelName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+  },
+  ttsModelNameSelected: {
+    color: '#FF69B4',
+  },
+  ttsModelDescription: {
+    fontSize: 13,
+    color: '#666',
   },
   apiKeyContainer: {
     flexDirection: 'row',
@@ -445,6 +596,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
+  },
+  testButtonDisabled: {
+    backgroundColor: '#F5F5F5',
+    opacity: 0.7,
   },
   testButtonText: {
     marginLeft: 8,
