@@ -86,7 +86,7 @@ const OutfitPanel = forwardRef<OutfitPanelRef, OutfitPanelProps>(({ onSelectOutf
     shoes: 'shoes1',
   });
   const { t } = useTranslation();
-  const { getThemeColors } = useThemeStore();
+  const { theme, getThemeColors } = useThemeStore();
   const themeColors = getThemeColors();
 
   // 分类列表动画

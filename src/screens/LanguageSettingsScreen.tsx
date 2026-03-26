@@ -3,15 +3,16 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from '../hooks/useTranslation';
 import { i18n, Language } from '../i18n';
+import { useThemeStore } from '../store/themeStore';
 
 type RootStackParamList = {
   Home: undefined;
@@ -33,37 +34,40 @@ const LANGUAGES: { key: Language; label: string; icon: string }[] = [
 
 const LanguageSettingsScreen: React.FC<LanguageSettingsScreenProps> = ({ navigation }) => {
   const { t, language, setLanguage } = useTranslation();
+  const { theme, getThemeColors } = useThemeStore();
+  const themeColors = getThemeColors();
 
   const handleLanguageChange = async (lang: Language) => {
     await setLanguage(lang);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
+    <SafeAreaView style={[styles.container, { backgroundColor: themeColors.background }]}>
+      <StatusBar style={theme === 'black' ? 'light' : 'dark'} />
 
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: themeColors.surface, borderBottomColor: themeColors.border }]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back" size={24} color="#333" />
+          <Ionicons name="arrow-back" size={24} color={themeColors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t('language.title')}</Text>
+        <Text style={[styles.headerTitle, { color: themeColors.text }]}>{t('language.title')}</Text>
         <View style={styles.placeholder} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Language Selection */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('language.selectLanguage')}</Text>
+        <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
+          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('language.selectLanguage')}</Text>
           {LANGUAGES.map((lang) => (
             <TouchableOpacity
               key={lang.key}
               style={[
                 styles.languageCard,
-                language === lang.key && styles.languageCardSelected,
+                { backgroundColor: themeColors.background, borderColor: 'transparent' },
+                language === lang.key && { borderColor: themeColors.primary, backgroundColor: themeColors.background },
               ]}
               onPress={() => handleLanguageChange(lang.key)}
             >
@@ -72,14 +76,15 @@ const LanguageSettingsScreen: React.FC<LanguageSettingsScreenProps> = ({ navigat
                 <Text
                   style={[
                     styles.languageName,
-                    language === lang.key && styles.languageNameSelected,
+                    { color: themeColors.text },
+                    language === lang.key && { color: themeColors.primary },
                   ]}
                 >
                   {lang.label}
                 </Text>
               </View>
               {language === lang.key && (
-                <Ionicons name="checkmark-circle" size={24} color="#FF69B4" />
+                <Ionicons name="checkmark-circle" size={24} color={themeColors.primary} />
               )}
             </TouchableOpacity>
           ))}
@@ -87,8 +92,8 @@ const LanguageSettingsScreen: React.FC<LanguageSettingsScreenProps> = ({ navigat
 
         {/* Current Language Info */}
         <View style={styles.infoContainer}>
-          <Ionicons name="information-circle" size={20} color="#666" />
-          <Text style={styles.infoText}>
+          <Ionicons name="information-circle" size={20} color={themeColors.textSecondary} />
+          <Text style={[styles.infoText, { color: themeColors.textSecondary }]}>
             {t('language.title')}: {LANGUAGES.find(l => l.key === language)?.label}
           </Text>
         </View>
@@ -102,7 +107,6 @@ const LanguageSettingsScreen: React.FC<LanguageSettingsScreenProps> = ({ navigat
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F5',
   },
   header: {
     flexDirection: 'row',
@@ -110,9 +114,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: '#FFE4EC',
   },
   backButton: {
     padding: 8,
@@ -120,7 +122,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
   placeholder: {
     width: 40,
@@ -129,7 +130,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   section: {
-    backgroundColor: 'white',
     marginHorizontal: 16,
     marginTop: 16,
     padding: 16,
@@ -143,22 +143,15 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 12,
   },
   languageCard: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#F8F8F8',
     borderRadius: 12,
     marginBottom: 10,
     borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  languageCardSelected: {
-    borderColor: '#FF69B4',
-    backgroundColor: '#FFF0F5',
   },
   languageIcon: {
     fontSize: 24,
@@ -170,10 +163,6 @@ const styles = StyleSheet.create({
   languageName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
-  },
-  languageNameSelected: {
-    color: '#FF69B4',
   },
   infoContainer: {
     flexDirection: 'row',
@@ -185,7 +174,6 @@ const styles = StyleSheet.create({
   infoText: {
     marginLeft: 8,
     fontSize: 14,
-    color: '#666',
   },
   bottomPadding: {
     height: 40,

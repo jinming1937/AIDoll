@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   TextInput,
@@ -12,8 +11,10 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import aiService from '../services/aiService';
 import { useTranslation } from '../hooks/useTranslation';
+import { useThemeStore } from '../store/themeStore';
 
 type RootStackParamList = {
   Home: undefined;
@@ -76,6 +77,8 @@ const TTS_MODELS: { key: TTSModel; name: string }[] = [
 
 const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
+  const { theme, getThemeColors } = useThemeStore();
+  const themeColors = getThemeColors();
   const [config, setConfig] = useState<AIConfig>({
     provider: 'qwen',
     apiKey: '',
@@ -135,20 +138,20 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
   const selectedProvider = PROVIDERS.find((p) => p.key === config.provider);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
+    <SafeAreaView style={[styles.container, { backgroundColor: themeColors.background }]}>
+      <StatusBar style={theme === 'black' ? 'light' : 'dark'} />
 
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: themeColors.surface, borderBottomColor: themeColors.border }]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back" size={24} color="#333" />
+          <Ionicons name="arrow-back" size={24} color={themeColors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t('aiSettings.title')}</Text>
+        <Text style={[styles.headerTitle, { color: themeColors.text }]}>{t('aiSettings.title')}</Text>
         <TouchableOpacity
-          style={[styles.saveButton, isLoading && styles.saveButtonDisabled]}
+          style={[styles.saveButton, { backgroundColor: themeColors.primary }, isLoading && { opacity: 0.7 }]}
           onPress={handleSave}
           disabled={isLoading}
         >
@@ -160,14 +163,15 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Provider Selection */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('aiSettings.selectModel')}</Text>
+        <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
+          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('aiSettings.selectModel')}</Text>
           {PROVIDERS.map((provider) => (
             <TouchableOpacity
               key={provider.key}
               style={[
                 styles.providerCard,
-                config.provider === provider.key && styles.providerCardSelected,
+                { backgroundColor: themeColors.background },
+                config.provider === provider.key && { borderColor: themeColors.primary },
               ]}
               onPress={() =>
                 setConfig({
@@ -181,18 +185,18 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
                 <Text
                   style={[
                     styles.providerName,
-                    config.provider === provider.key &&
-                      styles.providerNameSelected,
+                    { color: themeColors.text },
+                    config.provider === provider.key && { color: themeColors.primary },
                   ]}
                 >
                   {provider.name}
                 </Text>
-                <Text style={styles.providerDescription}>
+                <Text style={[styles.providerDescription, { color: themeColors.textSecondary }]}>
                   {provider.description}
                 </Text>
               </View>
               {config.provider === provider.key && (
-                <Ionicons name="checkmark-circle" size={24} color="#FF69B4" />
+                <Ionicons name="checkmark-circle" size={24} color={themeColors.primary} />
               )}
             </TouchableOpacity>
           ))}
@@ -200,22 +204,25 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
 
         {/* Model Selection */}
         {selectedProvider && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('aiSettings.selectVersion')}</Text>
+          <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
+            <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('aiSettings.selectChatVersion')}</Text>
+            <Text style={[styles.subSectionLabel, { color: themeColors.textSecondary }]}>{t('aiSettings.selectVersion')}</Text>
             <View style={styles.modelGrid}>
               {selectedProvider.models.map((model) => (
                 <TouchableOpacity
                   key={model}
                   style={[
                     styles.modelButton,
-                    config.model === model && styles.modelButtonSelected,
+                    { backgroundColor: themeColors.background },
+                    config.model === model && { backgroundColor: themeColors.primary, borderColor: themeColors.primaryDark },
                   ]}
                   onPress={() => setConfig({ ...config, model })}
                 >
                   <Text
                     style={[
                       styles.modelText,
-                      config.model === model && styles.modelTextSelected,
+                      { color: themeColors.text },
+                      config.model === model && { color: 'white' },
                     ]}
                   >
                     {model}
@@ -226,66 +233,20 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
           </View>
         )}
 
-        {/* API Key Input */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('aiSettings.apiKey')}</Text>
-          <View style={styles.apiKeyContainer}>
-            <TextInput
-              style={styles.apiKeyInput}
-              value={config.apiKey}
-              onChangeText={(text) => setConfig({ ...config, apiKey: text })}
-              placeholder={t('aiSettings.apiKeyPlaceholder', { provider: selectedProvider?.name || '' })}
-              placeholderTextColor="#999"
-              secureTextEntry={!showApiKey}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-            <TouchableOpacity
-              style={styles.eyeButton}
-              onPress={() => setShowApiKey(!showApiKey)}
-            >
-              <Ionicons
-                name={showApiKey ? 'eye-off' : 'eye'}
-                size={20}
-                color="#666"
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/* Help Text */}
-          <View style={styles.helpContainer}>
-            <Ionicons name="information-circle" size={16} color="#666" />
-            <Text style={styles.helpText}>
-              {config.provider === 'qwen'
-                ? t('aiSettings.helpText.qwen')
-                : t('aiSettings.helpText.openai')}
-            </Text>
-          </View>
-
-          {config.apiKey ? (
-            <TouchableOpacity
-              style={styles.clearButton}
-              onPress={handleClear}
-            >
-              <Ionicons name="trash-outline" size={18} color="#FF6B6B" />
-              <Text style={styles.clearButtonText}>{t('aiSettings.clearApiKey')}</Text>
-            </TouchableOpacity>
-          ) : null}
-        </View>
-
         {/* TTS Model Selection */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('aiSettings.ttsSettings')}</Text>
+        <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
+          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('aiSettings.ttsSettings')}</Text>
           
           {/* TTS Model Selection */}
-          <Text style={styles.subSectionLabel}>{t('aiSettings.selectTTSModel')}</Text>
+          <Text style={[styles.subSectionLabel, { color: themeColors.textSecondary }]}>{t('aiSettings.selectTTSModel')}</Text>
           <View style={styles.ttsModelContainer}>
             {TTS_MODELS.map((ttsModel) => (
               <TouchableOpacity
                 key={ttsModel.key}
                 style={[
                   styles.ttsModelButton,
-                  config.ttsModel === ttsModel.key && styles.ttsModelButtonSelected,
+                  { backgroundColor: themeColors.background },
+                  config.ttsModel === ttsModel.key && { borderColor: themeColors.primary },
                 ]}
                 onPress={() => setConfig({ ...config, ttsModel: ttsModel.key })}
               >
@@ -293,16 +254,17 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
                   <Text
                     style={[
                       styles.ttsModelName,
-                      config.ttsModel === ttsModel.key && styles.ttsModelNameSelected,
+                      { color: themeColors.text },
+                      config.ttsModel === ttsModel.key && { color: themeColors.primary },
                     ]}
                   >
                     {ttsModel.name}
                   </Text>
                   {config.ttsModel === ttsModel.key && (
-                    <Ionicons name="checkmark-circle" size={20} color="#FF69B4" />
+                    <Ionicons name="checkmark-circle" size={20} color={themeColors.primary} />
                   )}
                 </View>
-                <Text style={styles.ttsModelDescription}>
+                <Text style={[styles.ttsModelDescription, { color: themeColors.textSecondary }]}>
                   {getTTSDescription(ttsModel.key, t)}
                 </Text>
               </TouchableOpacity>
@@ -310,16 +272,16 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
           </View>
 
           {/* TTS API Key Input (Optional) */}
-          <Text style={[styles.subSectionLabel, { marginTop: 16 }]}>
+          <Text style={[styles.subSectionLabel, { color: themeColors.textSecondary, marginTop: 16 }]}>
             {t('aiSettings.ttsApiKey')}
           </Text>
-          <View style={styles.apiKeyContainer}>
+          <View style={[styles.apiKeyContainer, { backgroundColor: themeColors.background, borderColor: themeColors.border }]}>
             <TextInput
-              style={styles.apiKeyInput}
+              style={[styles.apiKeyInput, { color: themeColors.text }]}
               value={config.ttsApiKey}
               onChangeText={(text) => setConfig({ ...config, ttsApiKey: text })}
               placeholder={t('aiSettings.ttsApiKeyPlaceholder')}
-              placeholderTextColor="#999"
+              placeholderTextColor={themeColors.textSecondary}
               secureTextEntry={!showTTSApiKey}
               autoCapitalize="none"
               autoCorrect={false}
@@ -331,15 +293,63 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
               <Ionicons
                 name={showTTSApiKey ? 'eye-off' : 'eye'}
                 size={20}
-                color="#666"
+                color={themeColors.textSecondary}
               />
             </TouchableOpacity>
           </View>
         </View>
 
+         {/* API Key Input */}
+        <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
+          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('aiSettings.apiKey')}</Text>
+          <View style={[styles.apiKeyContainer, { backgroundColor: themeColors.background, borderColor: themeColors.border }]}>
+            <TextInput
+              style={[styles.apiKeyInput, { color: themeColors.text }]}
+              value={config.apiKey}
+              onChangeText={(text) => setConfig({ ...config, apiKey: text })}
+              placeholder={t('aiSettings.apiKeyPlaceholder', { provider: selectedProvider?.name || '' })}
+              placeholderTextColor={themeColors.textSecondary}
+              secureTextEntry={!showApiKey}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            <TouchableOpacity
+              style={styles.eyeButton}
+              onPress={() => setShowApiKey(!showApiKey)}
+            >
+              <Ionicons
+                name={showApiKey ? 'eye-off' : 'eye'}
+                size={20}
+                color={themeColors.textSecondary}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* Help Text */}
+          <View style={styles.helpContainer}>
+            <Ionicons name="information-circle" size={16} color={themeColors.textSecondary} />
+            <Text style={[styles.helpText, { color: themeColors.textSecondary }]}>
+              {config.provider === 'qwen'
+                ? t('aiSettings.helpText.qwen')
+                : t('aiSettings.helpText.openai')}
+            </Text>
+          </View>
+
+          {config.apiKey ? (
+            <TouchableOpacity
+              style={[styles.clearButton, { borderColor: '#FF6B6B' }]}
+              onPress={handleClear}
+            >
+              <Ionicons name="trash-outline" size={18} color="#FF6B6B" />
+              <Text style={styles.clearButtonText}>{t('aiSettings.clearApiKey')}</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+
+
         {/* Test Connection */}
         <TouchableOpacity
-          style={[styles.testButton, isTesting && styles.testButtonDisabled]}
+          style={[styles.testButton, { backgroundColor: themeColors.surface }, isTesting && { opacity: 0.7 }]}
           onPress={async () => {
             if (!config.apiKey) {
               Alert.alert(t('common.error'), t('messages.enterApiKey'));
@@ -367,16 +377,16 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
           }}
           disabled={isTesting}
         >
-          <Ionicons name={isTesting ? 'hourglass' : 'flash'} size={20} color="#FF69B4" />
-          <Text style={styles.testButtonText}>
+          <Ionicons name={isTesting ? 'hourglass' : 'flash'} size={20} color={themeColors.primary} />
+          <Text style={[styles.testButtonText, { color: themeColors.primary }]}>
             {isTesting ? t('common.testing') : t('aiSettings.testConnection')}
           </Text>
         </TouchableOpacity>
 
         {/* Note */}
-        <View style={styles.noteContainer}>
-          <Text style={styles.noteTitle}>{t('aiSettings.note.title')}</Text>
-          <Text style={styles.noteText}>
+        <View style={[styles.noteContainer, { backgroundColor: theme === 'black' ? '#2C2C2C' : '#FFF8E1', borderLeftColor: '#FFC107' }]}>
+          <Text style={[styles.noteTitle, { color: themeColors.text }]}>{t('aiSettings.note.title')}</Text>
+          <Text style={[styles.noteText, { color: themeColors.textSecondary }]}>
             {t('aiSettings.note.content')}
           </Text>
         </View>
@@ -390,7 +400,6 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F5',
   },
   header: {
     flexDirection: 'row',
@@ -398,9 +407,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: '#FFE4EC',
   },
   backButton: {
     padding: 8,
@@ -408,16 +415,11 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
   saveButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#FF69B4',
     borderRadius: 20,
-  },
-  saveButtonDisabled: {
-    backgroundColor: '#FFB6C1',
   },
   saveButtonText: {
     color: 'white',
@@ -427,7 +429,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   section: {
-    backgroundColor: 'white',
     marginHorizontal: 16,
     marginTop: 16,
     padding: 16,
@@ -441,12 +442,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 12,
   },
   subSectionLabel: {
     fontSize: 14,
-    color: '#666',
     marginBottom: 8,
   },
   providerCard: {
@@ -454,15 +453,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
-    backgroundColor: '#F8F8F8',
     borderRadius: 12,
     marginBottom: 10,
     borderWidth: 2,
     borderColor: 'transparent',
-  },
-  providerCardSelected: {
-    borderColor: '#FF69B4',
-    backgroundColor: '#FFF0F5',
   },
   providerInfo: {
     flex: 1,
@@ -470,15 +464,10 @@ const styles = StyleSheet.create({
   providerName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
     marginBottom: 4,
-  },
-  providerNameSelected: {
-    color: '#FF69B4',
   },
   providerDescription: {
     fontSize: 13,
-    color: '#666',
   },
   modelGrid: {
     flexDirection: 'row',
@@ -488,36 +477,21 @@ const styles = StyleSheet.create({
   modelButton: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: '#F5F5F5',
     borderRadius: 8,
     borderWidth: 1,
     borderColor: 'transparent',
   },
-  modelButtonSelected: {
-    backgroundColor: '#FF69B4',
-    borderColor: '#FF1493',
-  },
   modelText: {
     fontSize: 14,
-    color: '#333',
-  },
-  modelTextSelected: {
-    color: 'white',
-    fontWeight: '600',
   },
   ttsModelContainer: {
     gap: 10,
   },
   ttsModelButton: {
     padding: 16,
-    backgroundColor: '#F8F8F8',
     borderRadius: 12,
     borderWidth: 2,
     borderColor: 'transparent',
-  },
-  ttsModelButtonSelected: {
-    borderColor: '#FF69B4',
-    backgroundColor: '#FFF0F5',
   },
   ttsModelHeader: {
     flexDirection: 'row',
@@ -528,29 +502,21 @@ const styles = StyleSheet.create({
   ttsModelName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
-  },
-  ttsModelNameSelected: {
-    color: '#FF69B4',
   },
   ttsModelDescription: {
     fontSize: 13,
-    color: '#666',
   },
   apiKeyContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
   },
   apiKeyInput: {
     flex: 1,
     fontSize: 15,
     paddingHorizontal: 12,
     paddingVertical: 12,
-    color: '#333',
   },
   eyeButton: {
     padding: 12,
@@ -564,7 +530,6 @@ const styles = StyleSheet.create({
   helpText: {
     marginLeft: 6,
     fontSize: 12,
-    color: '#666',
     flex: 1,
   },
   clearButton: {
@@ -574,7 +539,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: '#FF6B6B',
     borderRadius: 8,
   },
   clearButtonText: {
@@ -589,7 +553,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: 24,
     paddingVertical: 14,
-    backgroundColor: 'white',
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -597,34 +560,25 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  testButtonDisabled: {
-    backgroundColor: '#F5F5F5',
-    opacity: 0.7,
-  },
   testButtonText: {
     marginLeft: 8,
     fontSize: 16,
     fontWeight: '600',
-    color: '#FF69B4',
   },
   noteContainer: {
-    backgroundColor: '#FFF8E1',
     marginHorizontal: 16,
     marginTop: 24,
     padding: 16,
     borderRadius: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#FFC107',
   },
   noteTitle: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 8,
   },
   noteText: {
     fontSize: 13,
-    color: '#666',
     lineHeight: 20,
   },
   bottomPadding: {

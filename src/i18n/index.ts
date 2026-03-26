@@ -55,6 +55,8 @@ export const translations = {
       galleryPermission: '需要访问相册权限来选择图片',
       cameraPermission: '需要相机权限来拍照',
       removeImageConfirm: '确定要移除自定义图片吗？',
+      audio: '音效设置',
+      volume: '音量',
       personalities: {
         cute: '可爱',
         intellectual: '知性',
@@ -71,6 +73,7 @@ export const translations = {
       title: 'AI设置',
       selectModel: '选择AI模型',
       selectVersion: '选择模型版本',
+      selectChatVersion: '选择聊天版本',
       apiKey: 'API Key',
       apiKeyPlaceholder: '输入{{provider}} API Key',
       testConnection: '测试连接',
@@ -122,6 +125,7 @@ export const translations = {
     // 聊天输入
     chat: {
       inputPlaceholder: '输入消息...',
+      typing: '正在输入...',
     },
     // 语音面板
     voice: {
@@ -196,6 +200,8 @@ export const translations = {
       galleryPermission: 'Need gallery permission to select images',
       cameraPermission: 'Need camera permission to take photos',
       removeImageConfirm: 'Are you sure you want to remove the custom image?',
+      audio: 'Audio Settings',
+      volume: 'Volume',
       personalities: {
         cute: 'Cute',
         intellectual: 'Intellectual',
@@ -212,6 +218,7 @@ export const translations = {
       title: 'AI Settings',
       selectModel: 'Select AI Model',
       selectVersion: 'Select Model Version',
+      selectChatVersion: 'Select Chat Version',
       apiKey: 'API Key',
       apiKeyPlaceholder: 'Enter {{provider}} API Key',
       testConnection: 'Test Connection',
@@ -263,6 +270,7 @@ export const translations = {
     // Chat Input
     chat: {
       inputPlaceholder: 'Type a message...',
+      typing: 'Typing...',
     },
     // Voice Panel
     voice: {

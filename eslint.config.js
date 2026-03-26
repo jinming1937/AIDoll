@@ -6,5 +6,14 @@ module.exports = defineConfig([
   expoConfig,
   {
     ignores: ['dist/*'],
+
+    rules: {
+      'react/react-in-jsx-scope': 'off',
+    },
+
+    // 标记为根配置（对应原来的 root: true）
+    settings: {
+      root: true,
+    },
   },
 ]);

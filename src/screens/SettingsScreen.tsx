@@ -3,19 +3,21 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   TextInput,
   Alert,
   Image,
 } from 'react-native';
+import Slider from '@react-native-community/slider';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as ImagePicker from 'expo-image-picker';
-import { useDollStore, getPersonalitiesByGender, getDefaultPersonality } from '../store/dollStore';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDollStore, getPersonalitiesByGender, getDefaultPersonality, femaleDefaultConfig } from '../store/dollStore';
 import { useThemeStore, THEME_OPTIONS } from '../store/themeStore';
+import { useAudioStore } from '../store/audioStore';
 import { DollConfig, Gender } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -41,6 +43,7 @@ const getGenderOptions = (t: (key: string) => string): { key: Gender; label: str
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const { config, setConfig, resetConfig, setImageUri } = useDollStore();
   const { theme, setTheme, getThemeColors } = useThemeStore();
+  const { volume, setVolume, isMuted } = useAudioStore();
   const { t } = useTranslation();
   const [localConfig, setLocalConfig] = useState<DollConfig>(config);
 
@@ -65,13 +68,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         onPress: () => {
           resetConfig();
           setLocalConfig({
-            name: 'Luna',
-            gender: 'female',
-            hairColor: '#FFD700',
-            skinColor: '#FFE4D6',
-            eyeColor: '#4A90D9',
-            outfitColor: '#FF69B4',
-            personality: 'cute',
+            name: femaleDefaultConfig.name,
+            gender: femaleDefaultConfig.gender,
+            hairColor: femaleDefaultConfig.hairColor,
+            skinColor: femaleDefaultConfig.skinColor,
+            eyeColor: femaleDefaultConfig.eyeColor,
+            outfitColor: femaleDefaultConfig.outfitColor,
+            personality: femaleDefaultConfig.personality,
             imageUri: null,
           });
         },
@@ -155,39 +158,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     );
   };
 
-  const ColorPicker = ({
-    label,
-    colors,
-    selected,
-    onSelect,
-  }: {
-    label: string;
-    colors: string[];
-    selected: string;
-    onSelect: (color: string) => void;
-  }) => (
-    <View style={styles.colorSection}>
-      <Text style={[styles.sectionLabel, { color: themeColors.textSecondary }]}>{label}</Text>
-      <View style={styles.colorGrid}>
-        {colors.map((color) => (
-          <TouchableOpacity
-            key={color}
-            style={[
-              styles.colorButton,
-              { backgroundColor: color },
-              selected === color && { borderColor: themeColors.primary },
-            ]}
-            onPress={() => onSelect(color)}
-          >
-            {selected === color && (
-              <Ionicons name="checkmark" size={20} color="white" />
-            )}
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-  );
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: themeColors.background }]}>
       <StatusBar style={theme === 'black' ? 'light' : 'dark'} />
@@ -236,11 +206,14 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
           <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('settings.name')}</Text>
           <TextInput
-            style={[styles.nameInput, { 
-              backgroundColor: themeColors.background, 
-              borderColor: themeColors.border,
-              color: themeColors.text 
-            }]}
+            style={[
+              styles.nameInput, 
+              { 
+                backgroundColor: themeColors.background, 
+                borderColor: themeColors.border,
+                color: themeColors.text 
+              }
+            ]}
             value={localConfig.name}
             onChangeText={(text) => setLocalConfig({ ...localConfig, name: text })}
             placeholder={t('settings.namePlaceholder')}
@@ -312,6 +285,36 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
             ))}
+          </View>
+        </View>
+
+        {/* Audio Settings */}
+        <View style={[styles.section, { backgroundColor: themeColors.surface }]}>
+          <Text style={[styles.sectionTitle, { color: themeColors.text }]}>{t('settings.audio')}</Text>
+          <View style={styles.audioControl}>
+            <View style={styles.audioControlRow}>
+              <Ionicons 
+                name={isMuted ? "volume-mute" : "volume-medium"} 
+                size={24} 
+                color={themeColors.primary} 
+              />
+              <Text style={[styles.audioLabel, { color: themeColors.text }]}>
+                {t('settings.volume')}
+              </Text>
+              <Text style={[styles.volumeValue, { color: themeColors.primary }]}>
+                {Math.round(volume * 100)}%
+              </Text>
+            </View>
+            <Slider
+              style={styles.volumeSlider}
+              minimumValue={0}
+              maximumValue={1}
+              value={volume}
+              onValueChange={setVolume}
+              minimumTrackTintColor={themeColors.primary}
+              maximumTrackTintColor={themeColors.border}
+              thumbTintColor={themeColors.primary}
+            />
           </View>
         </View>
 
@@ -712,6 +715,29 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 8,
+  },
+  audioControl: {
+    marginTop: 8,
+  },
+  audioControlRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  audioLabel: {
+    flex: 1,
+    marginLeft: 12,
+    fontSize: 16,
+    color: '#333',
+  },
+  volumeValue: {
+    fontSize: 14,
+    color: '#FF69B4',
+    fontWeight: '600',
+  },
+  volumeSlider: {
+    width: '100%',
+    height: 40,
   },
 });
 
