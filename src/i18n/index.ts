@@ -21,7 +21,7 @@ export const translations = {
     // 首页
     home: {
       title: 'AI Doll',
-      welcome: '按住下方按钮，开始和{{name}}对话吧~',
+      welcome: '发送消息，开始和{{name}}对话吧~',
       listening: '正在聆听...',
       settings: '设置',
     },
@@ -38,6 +38,7 @@ export const translations = {
       outfitColor: '服装颜色',
       preview: '预览',
       reset: '恢复默认设置',
+      clearAllData: '清除所有数据',
       aiSettings: 'AI模型设置',
       language: '语言设置',
       gender: '性别',
@@ -121,10 +122,13 @@ export const translations = {
       resetConfirm: '确定要恢复默认设置吗？',
       enterApiKey: '请先输入API Key',
       testConnectionFailed: '连接测试失败',
+      clearAllDataConfirm: '确定要清除所有数据吗？此操作不可恢复。',
+      allDataCleared: '所有数据已成功清除',
+      clearDataError: '清除数据失败，请重试',
     },
     // 聊天输入
     chat: {
-      inputPlaceholder: '输入消息...',
+      inputPlaceholder: '发送给{{name}}',
       typing: '正在输入...',
     },
     // 语音面板
@@ -149,6 +153,34 @@ export const translations = {
       bottom: '下装',
       shoes: '鞋子',
       none: '无',
+    },
+    // 日历
+    calendar: {
+      title: '日历',
+      events: '日程',
+      noEvents: '暂无日程安排',
+      monthNames: [
+        '一月', '二月', '三月', '四月', '五月', '六月',
+        '七月', '八月', '九月', '十月', '十一月', '十二月'
+      ],
+      weekDays: ['日', '一', '二', '三', '四', '五', '六']
+    },
+    // 备忘录
+    memo: {
+      title: '备忘录',
+      enterTitle: '请输入标题',
+      titlePlaceholder: '标题',
+      contentPlaceholder: '内容',
+      deleteConfirm: '确定要删除这个备忘录吗？',
+      empty: '暂无备忘录',
+      emptyHint: '点击右上角的 + 按钮创建你的第一个备忘录',
+      noContent: '无内容',
+      yesterday: '昨天'
+    },
+    // 消息卡片
+    messageCard: {
+      memo: '备忘录',
+      calendar: '日程'
     },
   },
   en: {
@@ -183,6 +215,7 @@ export const translations = {
       outfitColor: 'Outfit Color',
       preview: 'Preview',
       reset: 'Reset to Default',
+      clearAllData: 'Clear All Data',
       aiSettings: 'AI Model Settings',
       language: 'Language Settings',
       gender: 'Gender',
@@ -266,10 +299,13 @@ export const translations = {
       resetConfirm: 'Are you sure you want to reset to default settings?',
       enterApiKey: 'Please enter API Key first',
       testConnectionFailed: 'Connection test failed',
+      clearAllDataConfirm: 'Are you sure you want to clear all data? This action cannot be undone.',
+      allDataCleared: 'All data has been successfully cleared',
+      clearDataError: 'Failed to clear data, please try again',
     },
     // Chat Input
     chat: {
-      inputPlaceholder: 'Type a message...',
+      inputPlaceholder: 'Send to {{name}}', 
       typing: 'Typing...',
     },
     // Voice Panel
@@ -294,6 +330,34 @@ export const translations = {
       bottom: 'Bottom',
       shoes: 'Shoes',
       none: 'None',
+    },
+    // Calendar
+    calendar: {
+      title: 'Calendar',
+      events: 'Events',
+      noEvents: 'No events scheduled',
+      monthNames: [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ],
+      weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    },
+    // Memo
+    memo: {
+      title: 'Memo',
+      enterTitle: 'Please enter a title',
+      titlePlaceholder: 'Title',
+      contentPlaceholder: 'Content',
+      deleteConfirm: 'Are you sure you want to delete this memo?',
+      empty: 'No memos yet',
+      emptyHint: 'Tap the + button to create your first memo',
+      noContent: 'No content',
+      yesterday: 'Yesterday'
+    },
+    // Message Card
+    messageCard: {
+      memo: 'Memo',
+      calendar: 'Calendar'
     },
   },
 };

@@ -1,21 +1,35 @@
-import { View, StyleSheet, Dimensions } from 'react-native';
-import { Atlas, Canvas, Skia, useImage, Image, rotate, Group } from '@shopify/react-native-skia';
+import { View, StyleSheet, Dimensions, Platform } from 'react-native';
+import { Atlas, Canvas, Skia, useImage, Image, rotate, Group, SkRSXform, SkRect } from '@shopify/react-native-skia';
+import { useEffect, useState } from 'react';
 
-const PARTS = {
-  foot_right: { px: 100, py: 500, direction: 1, x: 180, y: 770, w: 120, h: 180 },
-  foot_left: { px: 100, py: 500, direction: 1, x: 140, y: 770, w: 120, h: 180 },
-  hand_right: { px: 100, py: 200, direction: 1, x: 1160, y: 100, w: 40, h: 120 },
-  hand_left: { px: 100, py: 200, direction: 1, x: 1515, y: 100, w: 40, h: 120 },
-  arm_right: { px: 100, py: 150, direction: 1, x: 1160, y: 390, w: 120, h: 180 },
-  arm_left: { px: 100, py: 150, direction: 1, x: 1515, y: 569, w: 40, h: 120 },
-  leg_lit_left: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
-  leg_lit_right: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
-  leg_left: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
-  leg_right: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
-  body_bottom: { px: 100, py: 400, direction: 1, x: 1470, y: 900, w: 100, h: 124 },
-  body_top: { px: 100, py: 100, direction: 1, x: 470, y: 80, w: 120, h: 180 },
-  head: { px: 200, py: 20, direction: 0, x: 920, y: 670, w: 110, h: 90 },
+// 🔥 加载本地 JSON（简化版本，直接使用 require）
+const loadLocalJson = (jsonAsset: any) => {
+  try {
+    console.log('开始加载 JSON 资源...');
+    // 直接使用 require 加载 JSON 文件
+    const jsonData = jsonAsset;
+    console.log('✅ JSON 加载成功，数据结构:', Object.keys(jsonData));
+    return jsonData;
+  } catch (err) {
+    console.error('❌ 加载失败', err);
+    return null;
+  }
 };
+// const PARTS = {
+//   foot_right: { px: 100, py: 500, direction: 1, x: 180, y: 770, w: 120, h: 180 },
+//   foot_left: { px: 100, py: 500, direction: 1, x: 140, y: 770, w: 120, h: 180 },
+//   hand_right: { px: 100, py: 200, direction: 1, x: 1160, y: 100, w: 40, h: 120 },
+//   hand_left: { px: 100, py: 200, direction: 1, x: 1515, y: 100, w: 40, h: 120 },
+//   arm_right: { px: 100, py: 150, direction: 1, x: 1160, y: 390, w: 120, h: 180 },
+//   arm_left: { px: 100, py: 150, direction: 1, x: 1515, y: 569, w: 40, h: 120 },
+//   leg_lit_left: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
+//   leg_lit_right: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
+//   leg_left: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
+//   leg_right: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
+//   body_bottom: { px: 100, py: 400, direction: 1, x: 1470, y: 900, w: 100, h: 124 },
+//   body_top: { px: 100, py: 100, direction: 1, x: 470, y: 80, w: 120, h: 180 },
+//   head: { px: 200, py: 20, direction: 0, x: 920, y: 670, w: 110, h: 90 },
+// };
 
 type IBasePosition = {
   x: number;
@@ -58,22 +72,46 @@ const BASE_POSITION: Record<string, IBasePosition> = {
   hair:               { "x": 145, "y": -1, "width": 98, "height": 108 },
 };
 
-// 映射表：雪碧图到基础位置的映射关系
-const Map = [];
+type IPosition = {
+  key: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  scaleX?: number;
+  scaleY?: number;
+  spriteX: number;
+  spriteY: number;
+  spriteWidth: number;
+  spriteHeight: number;
+  rotate?: number;
+}
+
+type ISprite = {
+  xy: number[]; // xy
+  size: number[]; // size
+  rotate?: boolean;
+};
+
+type ISlot = {name: string; bone: string; attachment?: string};
 
 export default function SkiaCharacter() {
   // const bone =;
-
-
+  const [bone, setBone] = useState<String[]>([]);
+  const [bonePosition, setBonePosition] = useState<Map<string, IPosition>>();
+  const [sprites, setSprites] = useState<SkRect[]>([]);
+  const [transforms, setTransforms] = useState<SkRSXform[]>([]);
   const sprite = useImage(require('../../assets/skia/body_girl.png'));
-  const parts = Object.values(PARTS);
-  const sprites = parts.map((p) => Skia.XYWHRect(p.x, p.y, p.w, p.h));
-  const transforms = parts.map((p) => {
-    if (p?.direction === 0) {
-      return Skia.RSXform(0, 1, p.px, p.py);
-    }
-    return Skia.RSXform(1, 0, p.px, p.py);
-  });
+  // useEffect(() => { 
+  //   const parts = Object.values(PARTS);
+  //   setSprites(parts.map((p) => Skia.XYWHRect(p.x, p.y, p.w, p.h)));
+  //   setTransforms(parts.map((p) => {
+  //     if (p?.direction === 0) {
+  //       return Skia.RSXform(0, 1, p.px, p.py);
+  //     }
+  //     return Skia.RSXform(1, 0, p.px, p.py);
+  //   }));
+  // }, [PARTS]);
   const offsetX = 40;
   const offsetY = 10;
   const sprite_base = {
@@ -103,6 +141,54 @@ export default function SkiaCharacter() {
     leg_bottom_right: useImage(require('../../assets/skia/base_body/leg_bottom_right.png')),
     leg_bottom_left: useImage(require('../../assets/skia/base_body/leg_bottom_left.png')),
   };
+  useEffect(() => { 
+    // 使用示例（游戏启动时预加载配置） 女主.json
+    const config = loadLocalJson(require('../../assets/data/nvzhu.json'));
+    if (config) {
+      console.log('配置加载成功');
+      const {posi, skins, slots, bones} = config;
+      const att = skins[0].attachments;
+      const keys: string[] = [];
+      const mapPosition: IPosition[] = [];
+      slots.filter((item: {name: string; bone: string; attachment?: string}) => typeof item.attachment === 'string').forEach((item: ISlot) => {
+        const key = item.name;
+        keys.push(key);
+        if (!att[key][key] || !att[key]['kong']) {
+          console.log('未找到 position:', key);
+          // return;
+        }
+        const b = bones.find((b: {x: number; y: number; name: string}) => b.name === item.bone);
+        if (!b) {
+          console.log('未找到 bone:', item.bone);
+          // return;
+        }
+        const { x, y } = b;
+        const { width, height, scaleX, scaleY, rotate } = (att[key][key] || att[key]['kong']) as IPosition;
+        const sprite = posi[item.attachment || 'kong'] as ISprite;
+        if (!sprite) {
+          console.log('未找到 sprite:', key);
+        }
+        mapPosition.push({key, x, y, width, height, rotate, scaleX, scaleY, spriteX: sprite.xy[0], spriteY: sprite.xy[1], spriteWidth: sprite.size[0], spriteHeight: sprite.size[1]});
+      });
+      console.log('keys:', keys);
+      // sprite 位置
+      setSprites(mapPosition.map((p) => {
+        const { spriteX, spriteY, spriteWidth, spriteHeight } = p;
+        return Skia.XYWHRect(spriteX, spriteY, spriteWidth, spriteHeight);
+      }));
+      // sprite 旋转
+      setTransforms(mapPosition.map((p) => {
+        if (p?.rotate === 0) {
+          return Skia.RSXform(0, 1, p.x, p.y);
+        }
+        return Skia.RSXform(1, 0, p.x, p.y);
+      }));
+      // setBonePosition(map);
+      setBone(keys);
+    }
+  }, []);
+
+
   return (
     <View style={styles.container}>
       {/* Skia Canvas 换装核心 */}

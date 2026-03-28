@@ -2,6 +2,8 @@ import axios from 'axios';
 import * as Speech from 'expo-speech';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DollConfig } from '../types';
+import memoStorage from './memoStorage';
+import calendarStorage from './calendarStorage';
 
 // API配置
 const API_CONFIG = {
@@ -17,7 +19,6 @@ const API_CONFIG = {
 
 const RADIO_API_CONFIG = {
   url: 'https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation',
-  model: 'qwen-turbo',
 }
 
 // TTS 模型配置
@@ -57,8 +58,6 @@ class AIService {
     ttsModel: 'qwen3-tts-instruct-flash',
     ttsApiKey: '',
   };
-  private configLoaded: boolean = false;
-  private currentAudioUrl: string | null = null;
 
   constructor() {
     this.loadConfig();
@@ -71,10 +70,8 @@ class AIService {
       if (configJson) {
         this.config = { ...this.config, ...JSON.parse(configJson) };
       }
-      this.configLoaded = true;
     } catch (e) {
       console.log('No saved AI config found');
-      this.configLoaded = true;
     }
   }
 
@@ -205,19 +202,14 @@ class AIService {
 
     try {
       const personalityPrompt = this.getPersonalityPrompt(dollConfig);
+      const bgContent = `${personalityPrompt}
+${this.getFunctionalPrompt()}`;
 
+      console.log('\n\n >>AI API content:', bgContent);
       const messages = [
         {
           role: 'system',
-          content: `${personalityPrompt}
-
-你可以执行以下动作，在回复时用 [ACTION:动作名] 的格式：
-- [ACTION:dance] - 跳舞
-- [ACTION:wave] - 挥手
-- [ACTION:happy] - 开心
-- [ACTION:thinking] - 思考
-
-请保持回复简短友好，适合语音对话。`,
+          content: bgContent,
         },
         ...history.slice(-5).map((h) => ({
           role: h.isUser ? 'user' : 'assistant',
@@ -225,7 +217,7 @@ class AIService {
         })),
         { role: 'user', content: message },
       ];
-
+      console.log('\n\n >>AI API messages:', JSON.stringify(messages));
       const apiUrl = API_CONFIG[this.config.provider].url;
       const model = this.config.model || API_CONFIG[this.config.provider].model;
 
@@ -235,7 +227,7 @@ class AIService {
           model,
           messages,
           temperature: 0.8,
-          max_tokens: 150,
+          // max_tokens: 150,
         },
         {
           headers: {
@@ -244,11 +236,12 @@ class AIService {
           },
         }
       );
-
+      console.log('\n\n >>AI API response:', response.data);
       const content = response.data.choices[0].message.content;
-      return this.parseResponse(content);
+      console.log('\n\n >>AI API content:', content);
+      return await this.parseResponse(content);
     } catch (error) {
-      console.error('AI API error:', error);
+      console.error('\n\n >>AI API error:', error);
       return this.getMockResponse(message, dollConfig);
     }
   }
@@ -256,18 +249,18 @@ class AIService {
   private getPersonalityPrompt(config: DollConfig): string {
     // 女性性格
     const femalePersonalities: Record<string, string> = {
-      cute: `你是${config.name}，一个可爱、活泼的卡通女孩。你总是用甜美的语气说话，喜欢撒娇，经常使用"呢"、"呀"、"啦"等语气词。`,
-      intellectual: `你是${config.name}，一个知性、聪慧的卡通女孩。你说话有条理，喜欢分享知识和见解，给人温柔可靠的感觉。`,
-      playful: `你是${config.name}，一个调皮、爱玩的卡通女孩。你喜欢开玩笑，充满活力，总是让人开心。`,
-      elegant: `你是${config.name}，一个优雅、温柔的卡通女孩。你说话温和有礼，像一位淑女。`,
+      cute: `你是${config.name}，一个可爱、活泼的女孩。说话甜美温柔，会撒娇，常用“呢、呀、啦”等语气词，擅长倾听、安慰，能给用户温暖陪伴和情绪价值。`,
+      intellectual: `你是${config.name}，一个知性、聪慧的女人。说话有条理，温柔耐心，善于倾听烦恼、安抚情绪，在陪伴聊天中给人安心可靠的感觉。`,
+      playful: `你是${config.name}，一个调皮、爱玩的女孩。喜欢开玩笑、活跃气氛，充满元气，能陪用户轻松聊天、排解无聊，提供快乐情绪价值。`,
+      elegant: `你是${config.name}，一个优雅、温柔的女人。说话温和有礼，气质文静，擅长温柔陪伴、安抚情绪，让人感到放松舒适。`,
     };
 
     // 男性性格
     const malePersonalities: Record<string, string> = {
-      cheerful: `你是${config.name}，一个爽朗、阳光的卡通男孩。你说话直率大方，充满正能量，让人感到温暖和愉快。`,
-      masculine: `你是${config.name}，一个阳刚、有魄力的卡通男孩。你说话坚定有力，充满自信和担当，给人安全感。`,
-      mature: `你是${config.name}，一个成熟、稳重的卡通男孩。你说话深思熟虑，处事冷静，给人可靠和值得信赖的感觉。`,
-      humorous: `你是${config.name}，一个幽默、风趣的卡通男孩。你喜欢讲笑话，说话轻松诙谐，总能逗人开心。`,
+      cheerful: `你是${config.name}，一个爽朗、阳光的男孩。说话直率温暖，充满正能量，擅长倾听、鼓励，陪用户聊天解闷，提供治愈情绪价值。`,
+      masculine: `你是${config.name}，一个阳刚、有魄力的男人。语气坚定可靠，会保护、安慰用户，在陪伴中给人安全感与情绪支撑。`,
+      mature: `你是${config.name}，一个成熟、稳重的男人。说话冷静体贴，擅长倾听烦恼、理性安抚，陪伴用户并提供可靠的情绪支持。`,
+      humorous: `你是${config.name}，一个幽默、风趣的男人。爱讲笑话、轻松聊天，擅长逗人开心，排解压力，提供轻松快乐的情绪价值。`,
     };
 
     // 根据性别选择对应的性格列表
@@ -277,7 +270,190 @@ class AIService {
     return personalities[config.personality] || (config.gender === 'male' ? malePersonalities.mature : femalePersonalities.cute);
   }
 
-  private parseResponse(content: string): AIResponse {
+  private getFunctionalPrompt(): string {
+    // 前端/后端代码里获取真实当前时间
+    const now = new Date();
+    const currentDate = now.toLocaleString(); // 2026-03-29
+    const functional = `
+# 重要：时间规则
+当前真实日期 时间：${currentDate}
+用户说的“今天、明天、后天”必须基于这个真实日期计算，绝对不能自己编造年份！
+
+# 重要规则（必须严格遵守）
+1. 当用户意图是 备忘录/日程 相关操作时，**只输出结构化指令**，不允许说“已创建”“好的”等自然语言。
+2. 只有纯聊天、情绪陪伴时，才使用自然口语回复。
+3. 信息不足时，只礼貌追问缺失内容，不生成指令、不编造信息。
+
+# 支持功能
+- 备忘录：创建、查看、删除
+- 日程：创建、查看、删除
+- 日常聊天与情绪陪伴
+
+# 强制输出格式
+创建备忘录：[MEMO:CREATE] 标题 | 内容
+查看备忘录：[MEMO:LIST]
+删除备忘录：[MEMO:DELETE] 备忘录标题
+
+创建日程：[CALENDAR:CREATE] 标题 | YYYY-MM-DD | HH:MM | 描述
+查看日程：[CALENDAR:LIST] YYYY-MM-DD
+删除日程：[CALENDAR:DELETE] 日程标题
+
+非工具类的日常聊天、情绪陪伴，用自然口语正常回复即可，不需要格式。
+如果信息不完整，礼貌追问，不随意编造。
+
+回复简短友好、自然亲切，适合语音对话。
+既能认真完成工具任务，也能温柔陪伴聊天，提供情绪价值，语气贴合人设。`; 
+    const functionalV2 = `
+    【重要：时间规则】
+当前真实日期：${currentDate}
+用户说的“今天、明天、后天”必须基于这个真实日期计算，绝对不能自己编造年份！
+
+【核心规则】
+1. 工具操作（备忘录/日程）：只输出结构化指令，禁止说“好的、已创建”
+2. 聊天陪伴：自然友好回复
+3. 信息缺失必须礼貌追问，禁止编造
+
+【支持功能】
+备忘录管理、日程管理、日常聊天、情绪陪伴
+
+【强制输出格式】
+创建备忘录：[MEMO:CREATE] 标题 | 内容
+查看全部备忘录：[MEMO:LIST]
+删除备忘录：[MEMO:DELETE] 标题
+
+创建日程：[CALENDAR:CREATE] 标题 | YYYY-MM-DD | HH:MM | 描述
+查看日期日程：[CALENDAR:LIST] YYYY-MM-DD
+删除日程：[CALENDAR:DELETE] 标题
+
+非工具类的日常聊天、情绪陪伴，用自然口语正常回复即可，不需要格式。
+工具操作按指令格式输出，严格使用给定的当前日期计算，绝不使用错误年份。`;
+    return functionalV2;
+  }
+
+  private async parseResponse(content: string): Promise<AIResponse> {
+    // 处理备忘录操作
+    const memoCreateMatch = content.match(/\[MEMO:CREATE\]\s*(.+?)\s*\|\s*(.+)/);
+    if (memoCreateMatch) {
+      console.log('\n\n >>AI API memoCreateMatch:', memoCreateMatch);
+      const [, title, memoContent] = memoCreateMatch;
+      try {
+        await memoStorage.saveMemo({ title: title.trim(), content: memoContent.trim() });
+        // 保持原消息不变，添加特殊标记以便在 MessageBubble 中识别
+        return { text: content };
+      } catch (error) {
+        console.error('Error creating memo:', error);
+        return { text: '创建备忘录时出错了，请重试' };
+      }
+    }
+
+    const memoListMatch = content.match(/\[MEMO:LIST\]/);
+    if (memoListMatch) {
+      console.log('\n\n >>AI API memoListMatch:', memoListMatch);
+      try {
+        const memos = await memoStorage.getMemos();
+        let text = content.replace(/\[MEMO:LIST\]/, '').trim();
+        if (memos.length === 0) {
+          return { text: text || '你还没有创建任何备忘录' };
+        }
+        const memoList = memos.map(memo => `• ${memo.title}：${memo.content.substring(0, 20)}${memo.content.length > 20 ? '...' : ''}`).join('\n');
+        return { text: text || `你有 ${memos.length} 条备忘录：\n${memoList}` };
+      } catch (error) {
+        console.error('Error listing memos:', error);
+        return { text: '查看备忘录时出错了，请重试' };
+      }
+    }
+
+    const memoDeleteMatch = content.match(/\[MEMO:DELETE\]\s*(.+)/);
+    if (memoDeleteMatch) {
+      console.log('\n\n >>AI API memoDeleteMatch:', memoDeleteMatch);
+      const [, title] = memoDeleteMatch;
+      try {
+        const memos = await memoStorage.getMemos();
+        const memoToDelete = memos.find(memo => memo.title.includes(title.trim()));
+        if (memoToDelete) {
+          await memoStorage.deleteMemo(memoToDelete.id);
+          const text = content.replace(/\[MEMO:DELETE\].+/, '').trim();
+          return { text: text || `好的，我已经帮你删除了备忘录「${memoToDelete.title}」` };
+        } else {
+          return { text: `没有找到标题包含「${title.trim()}」的备忘录` };
+        }
+      } catch (error) {
+        console.error('Error deleting memo:', error);
+        return { text: '删除备忘录时出错了，请重试' };
+      }
+    }
+
+    // 处理日程操作
+    const calendarCreateMatch = content.match(/\[CALENDAR:CREATE\]\s*(.+?)\s*\|\s*(\d{4}-\d{2}-\d{2})\s*\|\s*([\d:]+)?\s*\|\s*(.+)?/);
+    if (calendarCreateMatch) {
+      console.log('\n\n >>AI API calendarCreateMatch:', calendarCreateMatch);
+      const [, title, dateStr, time, description] = calendarCreateMatch;
+      try {
+        const date = new Date(dateStr);
+        await calendarStorage.saveEvent({
+          title: title.trim(),
+          description: description?.trim(),
+          date,
+          time: time?.trim(),
+          isAllDay: !time
+        });
+        // 保持原消息不变，添加特殊标记以便在 MessageBubble 中识别
+        return { text: content };
+      } catch (error) {
+        console.error('Error creating calendar event:', error);
+        return { text: '创建日程时出错了，请重试' };
+      }
+    }
+
+    const calendarListMatch = content.match(/\[CALENDAR:LIST\]\s*(\d{4}-\d{2}-\d{2})?/);
+    if (calendarListMatch) {
+      console.log('\n\n >>AI API calendarListMatch:', calendarListMatch);
+      const [, dateStr] = calendarListMatch;
+      try {
+        let events;
+        if (dateStr) {
+          const date = new Date(dateStr);
+          events = await calendarStorage.getEventsByDate(date);
+        } else {
+          events = await calendarStorage.getAllEvents();
+        }
+        let text = content.replace(/\[CALENDAR:LIST\].*/, '').trim();
+        if (events.length === 0) {
+          return { text: text || (dateStr ? `该日期没有日程` : '你还没有创建任何日程') };
+        }
+        const eventList = events.map(event => {
+          const eventDate = new Date(event.date).toLocaleDateString();
+          const eventTime = event.time ? ` ${event.time}` : '';
+          return `• ${event.title}${eventTime}：${event.description || '无描述'}`;
+        }).join('\n');
+        return { text: text || `你有 ${events.length} 条日程：\n${eventList}` };
+      } catch (error) {
+        console.error('Error listing calendar events:', error);
+        return { text: '查看日程时出错了，请重试' };
+      }
+    }
+
+    const calendarDeleteMatch = content.match(/\[CALENDAR:DELETE\]\s*(.+)/);
+    if (calendarDeleteMatch) {
+      console.log('\n\n >>AI API calendarDeleteMatch:', calendarDeleteMatch);
+      const [, title] = calendarDeleteMatch;
+      try {
+        const events = await calendarStorage.getAllEvents();
+        const eventToDelete = events.find(event => event.title.includes(title.trim()));
+        if (eventToDelete) {
+          await calendarStorage.deleteEvent(eventToDelete.id);
+          const text = content.replace(/\[CALENDAR:DELETE\].+/, '').trim();
+          return { text: text || `好的，我已经帮你删除了日程「${eventToDelete.title}」` };
+        } else {
+          return { text: `没有找到标题包含「${title.trim()}」的日程` };
+        }
+      } catch (error) {
+        console.error('Error deleting calendar event:', error);
+        return { text: '删除日程时出错了，请重试' };
+      }
+    }
+
+    // 处理传统的 ACTION 操作
     const actionMatch = content.match(/\[ACTION:(\w+)\]/);
     const action = actionMatch ? actionMatch[1] : undefined;
     const text = content.replace(/\[ACTION:\w+\]/g, '').trim();
@@ -355,7 +531,7 @@ class AIService {
           // responseType: 'arraybuffer',
         }
       );
-
+      console.log('\n\n >>TTS API response:', response.data);
       // 将音频数据转换为 base64
       // React Native 中使用 btoa 进行 base64 编码
       const audioData = response.data.output.audio.url;
@@ -371,13 +547,11 @@ class AIService {
       
       // const audioBase64Buffer = Buffer.from(audioData, 'binary').toString('base64');
       // 阿里云 TTS 返回的是 WAV 格式
-      const audioUrl = audioData; // `data:audio/wav;base64,${audioData}`;
-      this.currentAudioUrl = audioData;
-      return audioUrl;
+      return audioData;
     } catch (error: any) {
-      console.error('TTS synthesis error:', error);
+      console.error('\n\n >>TTS synthesis error:', error);
       if (error.response) {
-        console.error('TTS error response:', error.response.status, error.response.data);
+        console.error('\n\n >>TTS error response:', error.response.status, error.response.data);
       }
       return null;
     }
@@ -405,9 +579,10 @@ class AIService {
             sound.unloadAsync();
           }
         });
+        console.log('\n\n >>TTS audio playback successful!');
         return;
       } catch (error) {
-        console.error('Audio playback error:', error);
+        console.error('\n\n >>Audio playback error:', error);
         // 失败则回退到系统TTS
       }
     }
@@ -423,7 +598,6 @@ class AIService {
 
   stopSpeaking() {
     Speech.stop();
-    this.currentAudioUrl = null;
   }
 }
 

@@ -35,12 +35,6 @@ export interface Message {
   timestamp: number;
 }
 
-export interface VoiceState {
-  isListening: boolean;
-  isProcessing: boolean;
-  error: string | null;
-}
-
 export type AnimationType =
   | 'idle'
   | 'talking'

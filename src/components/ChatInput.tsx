@@ -14,14 +14,14 @@ const { width } = Dimensions.get('window');
 
 interface ChatInputProps {
   onSendMessage: (text: string) => void;
-  onVoicePress: () => void;
   disabled?: boolean;
+  dollName: string;
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({
   onSendMessage,
-  onVoicePress,
   disabled = false,
+  dollName,
 }) => {
   const [text, setText] = useState('');
   const { theme, getThemeColors } = useThemeStore();
@@ -42,22 +42,13 @@ const ChatInput: React.FC<ChatInputProps> = ({
           style={[styles.input, { color: themeColors.text }]}
           value={text}
           onChangeText={setText}
-          placeholder={t('chat.inputPlaceholder')}
+          placeholder={t('chat.inputPlaceholder', { name: dollName })}
           placeholderTextColor={themeColors.textSecondary}
           multiline={false}
           editable={!disabled}
           onSubmitEditing={handleSend}
           returnKeyType="send"
         />
-        
-        {/* 语音按钮 */}
-        <TouchableOpacity
-          style={styles.voiceButton}
-          onPress={onVoicePress}
-          disabled={disabled}
-        >
-          <Ionicons name="mic-outline" size={24} color={themeColors.primary} />
-        </TouchableOpacity>
         
         {/* 发送按钮 */}
         {text.trim().length > 0 && (
@@ -96,17 +87,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     maxHeight: 100,
   },
-  voiceButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 4,
-  },
   sendButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 4,
