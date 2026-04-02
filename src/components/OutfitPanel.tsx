@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderTopRightRadius: 16,
     borderBottomRightRadius: 16,
-    zIndex: 100,
+    zIndex: 10,
   },
   categoryList: {
     flex: 1,

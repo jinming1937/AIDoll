@@ -7,7 +7,7 @@
 - 🤖 **AI对话** - 与可爱的卡通人物进行对话
 - 🎨 **自定义外观** - 设置人物的发色、肤色、眼睛颜色和服装
 - 🎭 **多种性格** - 可爱、性感、调皮、优雅四种性格可选
-- 💃 **动作互动** - 让卡通人物跳舞、挥手等
+- 💃 **互动** - 让人物可以创建日程、备忘录等
 - 🔊 **语音播报** - AI回复会自动语音播报
 - 🌐 **多语言** - 支持中文、英文切换
 
@@ -17,8 +17,9 @@
 - TypeScript
 - Zustand (状态管理)
 - React Navigation
-- React Native SVG (卡通人物绘制)
+- React Native Skia (卡通人物绘制)
 - Expo Speech (语音合成)
+- Qwen 大模型 (AI对话)
 
 ## 项目结构
 
@@ -26,7 +27,6 @@
 src/
 ├── components/          # 组件
 │   ├── DollCharacter.tsx    # 卡通人物组件
-│   ├── VoiceButton.tsx      # 语音按钮
 │   └── MessageBubble.tsx    # 消息气泡
 ├── screens/            # 页面
 │   ├── HomeScreen.tsx       # 主页面
@@ -52,8 +52,7 @@ src/
 ### 1. 安装依赖
 
 ```bash
-cd packages/apps/rn
-pnpm install
+npm install
 ```
 
 ### 2. 配置 EAS (Expo Application Services)
@@ -74,13 +73,13 @@ npx eas build:configure
 
 ```bash
 # 使用Expo Go
-pnpm start
+npm run start
 
 # iOS模拟器
-pnpm ios
+npm ios
 
 # Android模拟器
-pnpm android
+npm android
 ```
 
 ## 打包发布
@@ -88,24 +87,27 @@ pnpm android
 ### 使用 EAS Build（推荐）
 
 1. 确保已登录 Expo 账号并配置项目
+
 ```bash
 eas login
 eas build:configure
 ```
 
-2. 构建 Android APK
+1. 构建 Android APK
+
 ```bash
 # 预览版
-pnpm build:android
+npm build:android
 
 # 生产版
 eas build --platform android --profile production
 ```
 
-3. 构建 iOS App
+1. 构建 iOS App Store 包
+
 ```bash
 # 预览版
-pnpm build:ios
+npm build:ios
 
 # 生产版（需要Apple开发者账号）
 eas build --platform ios --profile production
@@ -121,8 +123,7 @@ eas build --platform ios --profile production
 #### 配置步骤
 
 1. 在 GitHub 仓库 Settings → Secrets 中添加以下 Secrets：
-   - `EXPO_TOKEN` - Expo 访问令牌（从 https://expo.dev/settings/access-tokens 获取）
-
+   - `EXPO_TOKEN` - Expo 访问令牌（从 <https://expo.dev/settings/access-tokens> 获取）
 2. 确保 `app.json` 中的 `extra.eas.projectId` 已设置为正确的值：
    ```json
    {
@@ -135,9 +136,7 @@ eas build --platform ios --profile production
      }
    }
    ```
-
 3. 推送代码到 main 分支会自动触发构建
-
 4. 手动触发构建：
    - 进入 Actions 页面
    - 选择工作流
@@ -149,6 +148,7 @@ eas build --platform ios --profile production
 ### 修改卡通人物外观
 
 在设置页面可以修改：
+
 - 名字
 - 发色（金色、红色、青色等）
 - 肤色（白皙、自然、健康等）
@@ -160,8 +160,8 @@ eas build --platform ios --profile production
 
 1. 进入设置 → AI模型设置
 2. 选择 AI 提供商：
-   - **通义千问** (推荐国内用户) - https://dashscope.aliyun.com/
-   - **OpenAI** - https://platform.openai.com/api-keys
+   - **通义千问** (推荐国内用户) - <https://dashscope.aliyun.com/>
+   - **OpenAI** - <https://platform.openai.com/api-keys>
 3. 输入 API Key
 4. 选择模型版本
 
@@ -179,10 +179,6 @@ eas build --platform ios --profile production
 export type AnimationType = 
   | 'idle' 
   | 'talking' 
-  | 'dancing' 
-  | 'happy' 
-  | 'waving' 
-  | 'thinking'
   | 'your-new-action';  // 添加新动作
 ```
 
@@ -206,6 +202,7 @@ export const translations = {
 ```
 
 在组件中使用：
+
 ```typescript
 const { t } = useTranslation();
 <Text>{t('yourNewKey')}</Text>
@@ -221,12 +218,15 @@ const { t } = useTranslation();
 ## 常见问题
 
 ### Q: GitHub Actions 报错 "Invalid UUID appId"
+
 A: 需要在 `app.json` 中设置正确的 `extra.eas.projectId`。运行 `eas build:configure` 会自动配置。
 
 ### Q: 如何获取 Expo Token？
-A: 访问 https://expo.dev/settings/access-tokens 创建新的访问令牌。
+
+A: 访问 <https://expo.dev/settings/access-tokens> 创建新的访问令牌。
 
 ### Q: 支持哪些 AI 模型？
+
 A: 目前支持通义千问 (Qwen) 和 OpenAI (GPT)。通义千问对中文支持更好，推荐国内用户使用。
 
 ## 许可证

@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as ImagePicker from 'expo-image-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDollStore, getPersonalitiesByGender, getDefaultPersonality, femaleDefaultConfig } from '../store/dollStore';
 import { useThemeStore, THEME_OPTIONS } from '../store/themeStore';
 import { useAudioStore } from '../store/audioStore';
@@ -143,6 +144,32 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         },
       },
     ]);
+  };
+
+  const handleClearAllData = () => {
+    Alert.alert(
+      t('common.confirm'),
+      t('messages.clearAllDataConfirm'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.confirm'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await AsyncStorage.clear();
+              resetConfig();
+              setLocalConfig(femaleDefaultConfig);
+              Alert.alert(t('common.success'), t('messages.allDataCleared'), [
+                { text: t('common.confirm'), onPress: () => navigation.goBack() },
+              ]);
+            } catch (error) {
+              Alert.alert(t('common.error'), t('messages.clearDataError'));
+            }
+          },
+        },
+      ]
+    );
   };
 
   const showImageOptions = () => {
@@ -371,6 +398,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         <TouchableOpacity style={[styles.resetButton, { backgroundColor: themeColors.surface, borderColor: '#FF6B6B' }]} onPress={handleReset}>
           <Ionicons name="refresh" size={20} color="#FF6B6B" />
           <Text style={[styles.resetButtonText, { color: '#FF6B6B' }]}>{t('settings.reset')}</Text>
+        </TouchableOpacity>
+
+        {/* Clear All Data Button */}
+        <TouchableOpacity style={[styles.clearAllDataButton, { backgroundColor: themeColors.surface, borderColor: '#FF3B30' }]} onPress={handleClearAllData}>
+          <Ionicons name="trash-outline" size={20} color="#FF3B30" />
+          <Text style={[styles.clearAllDataButtonText, { color: '#FF3B30' }]}>{t('settings.clearAllData')}</Text>
         </TouchableOpacity>
 
         <View style={styles.bottomPadding} />
@@ -627,6 +660,23 @@ const styles = StyleSheet.create({
   resetButtonText: {
     marginLeft: 8,
     color: '#FF6B6B',
+    fontWeight: '600',
+  },
+  clearAllDataButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 16,
+    marginTop: 12,
+    paddingVertical: 14,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FF3B30',
+  },
+  clearAllDataButtonText: {
+    marginLeft: 8,
+    color: '#FF3B30',
     fontWeight: '600',
   },
   aiSettingsButton: {

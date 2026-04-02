@@ -7,6 +7,8 @@ import HomeScreen from './src/screens/HomeScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import AISettingsScreen from './src/screens/AISettingsScreen';
 import LanguageSettingsScreen from './src/screens/LanguageSettingsScreen';
+import CalendarScreen from './src/screens/CalendarScreen';
+import MemoScreen from './src/screens/MemoScreen';
 import { audioService } from './src/services/audioService';
 import { useAudioStore } from './src/store/audioStore';
 
@@ -15,6 +17,8 @@ export type RootStackParamList = {
   Settings: undefined;
   AISettings: undefined;
   LanguageSettings: undefined;
+  Calendar: undefined;
+  Memo: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -54,6 +58,20 @@ export default function App() {
           <Stack.Screen
             name="LanguageSettings"
             component={LanguageSettingsScreen}
+            options={{
+              presentation: 'modal'
+            }}
+          />
+          <Stack.Screen
+            name="Calendar"
+            component={CalendarScreen}
+            options={{
+              presentation: 'modal'
+            }}
+          />
+          <Stack.Screen
+            name="Memo"
+            component={MemoScreen}
             options={{
               presentation: 'modal'
             }}
