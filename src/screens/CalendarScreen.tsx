@@ -21,7 +21,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import { translations } from '../i18n';
 import calendarStorage, { CalendarEvent } from '../services/calendarStorage';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 type CalendarScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Calendar'>;
 
@@ -35,7 +35,7 @@ const CalendarScreen: React.FC<CalendarScreenProps> = ({ navigation }) => {
   const themeColors = getThemeColors();
 
   // 获取当前日期
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedDateEvents, setSelectedDateEvents] = useState<CalendarEvent[]>([]);
@@ -108,15 +108,7 @@ const CalendarScreen: React.FC<CalendarScreenProps> = ({ navigation }) => {
   const monthNames = language === 'zh' ? translations.zh.calendar.monthNames : translations.en.calendar.monthNames;
   const weekDays = language === 'zh' ? translations.zh.calendar.weekDays : translations.en.calendar.weekDays;
 
-  // 切换到上个月
-  const goToPreviousMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1));
-  };
 
-  // 切换到下个月
-  const goToNextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1));
-  };
 
   // 创建日程
   const handleCreateEvent = async () => {

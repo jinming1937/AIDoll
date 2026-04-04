@@ -17,7 +17,7 @@ export function useTranslation() {
     (key: string, vars?: Record<string, string>) => {
       return i18n.t(key, vars);
     },
-    [language]
+    []
   );
 
   // 设置语言

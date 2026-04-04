@@ -163,7 +163,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
               Alert.alert(t('common.success'), t('messages.allDataCleared'), [
                 { text: t('common.confirm'), onPress: () => navigation.goBack() },
               ]);
-            } catch (error) {
+            } catch {
               Alert.alert(t('common.error'), t('messages.clearDataError'));
             }
           },

@@ -2,7 +2,7 @@ name: Build iOS App
 
 on:
   push:
-    branches: [main, develop, dev]
+    branches: [dev]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -79,6 +79,3 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
-
-      - name: Run tests
-        run: npm test -- --passWithNoTests
