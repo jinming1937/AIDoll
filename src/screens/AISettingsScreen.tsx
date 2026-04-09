@@ -115,7 +115,7 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
       Alert.alert(t('messages.saveSuccess'), t('messages.configUpdated'), [
         { text: t('common.confirm'), onPress: () => navigation.goBack() },
       ]);
-    } catch (error) {
+    } catch {
       Alert.alert(t('messages.saveError'), t('common.error'));
     } finally {
       setIsLoading(false);
@@ -365,7 +365,7 @@ const AISettingsScreen: React.FC<AISettingsScreenProps> = ({ navigation }) => {
                 result.message,
                 [{ text: t('common.confirm'), style: 'default' }]
               );
-            } catch (error) {
+            } catch {
               Alert.alert(
                 t('common.error'),
                 t('messages.testConnectionFailed'),

@@ -42,3 +42,43 @@ export type AnimationType =
   | 'happy'
   | 'waving'
   | 'thinking';
+
+
+  
+export type IBasePosition = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotate?: number;
+  offsetX?: number;
+  offsetY?: number;
+}
+
+export type IPosition = {
+  key: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  scaleX?: number;
+  scaleY?: number;
+  spriteX: number;
+  spriteY: number;
+  spriteWidth: number;
+  spriteHeight: number;
+  rotation: number;
+  needRotate: boolean;
+  offsetX: number;
+  offsetY: number;
+  ox: number;
+  oy: number;
+}
+
+export type ISprite = {
+  xy: number[]; // xy
+  size: number[]; // size
+  orig: number[]; // origin
+  offset: number[]; // offset
+  rotate: boolean;
+};

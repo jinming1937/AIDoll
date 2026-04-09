@@ -1,223 +1,152 @@
-import { View, StyleSheet, Dimensions, Platform } from 'react-native';
-import { Atlas, Canvas, Skia, useImage, Image, rotate, Group, SkRSXform, SkRect } from '@shopify/react-native-skia';
+import { View, StyleSheet } from 'react-native';
+import { Atlas, Canvas, Skia, useImage, SkRSXform, SkRect, Group } from '@shopify/react-native-skia';
 import { useEffect, useState } from 'react';
+import { IBasePosition, IPosition, ISprite } from '../types';
 
-// 🔥 加载本地 JSON（简化版本，直接使用 require）
-const loadLocalJson = (jsonAsset: any) => {
-  try {
-    console.log('开始加载 JSON 资源...');
-    // 直接使用 require 加载 JSON 文件
-    const jsonData = jsonAsset;
-    console.log('✅ JSON 加载成功，数据结构:', Object.keys(jsonData));
-    return jsonData;
-  } catch (err) {
-    console.error('❌ 加载失败', err);
-    return null;
-  }
-};
-// const PARTS = {
-//   foot_right: { px: 100, py: 500, direction: 1, x: 180, y: 770, w: 120, h: 180 },
-//   foot_left: { px: 100, py: 500, direction: 1, x: 140, y: 770, w: 120, h: 180 },
-//   hand_right: { px: 100, py: 200, direction: 1, x: 1160, y: 100, w: 40, h: 120 },
-//   hand_left: { px: 100, py: 200, direction: 1, x: 1515, y: 100, w: 40, h: 120 },
-//   arm_right: { px: 100, py: 150, direction: 1, x: 1160, y: 390, w: 120, h: 180 },
-//   arm_left: { px: 100, py: 150, direction: 1, x: 1515, y: 569, w: 40, h: 120 },
-//   leg_lit_left: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
-//   leg_lit_right: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
-//   leg_left: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
-//   leg_right: { px: 100, py: 450, direction: 1, x: 180, y: 590, w: 120, h: 180 },
-//   body_bottom: { px: 100, py: 400, direction: 1, x: 1470, y: 900, w: 100, h: 124 },
-//   body_top: { px: 100, py: 100, direction: 1, x: 470, y: 80, w: 120, h: 180 },
-//   head: { px: 200, py: 20, direction: 0, x: 920, y: 670, w: 110, h: 90 },
-// };
-
-type IBasePosition = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rotate?: number;
-}
-
+/**
+ * xiaobi_L1
+ * dabi_L1
+ * shou_L1
+ * xiaotui_L
+ * xiaotui_R
+ * datui_L
+ * datui_R
+ * jiao_L1
+ * jiao_R1
+ * yao1
+ * xiong
+ * xiaobi_R1
+ * dabi_R1
+ * shou_R1
+ * tou
+ * zhengyan
+ * mei
+ * zui
+ * toufaqian1
+*/
 const BASE_POSITION: Record<string, IBasePosition> = {
-  "arm_bottom_left":  { "x": 106, "y": 223, "width": 40, "height": 109 },
-  "arm_top_left":     { "x": 128, "y": 124, "width": 39, "height": 112 },
-  "hand_left":        { "x": 104,  "y": 305, "width": 28, "height": 59 },
-  
-  "leg_bottom_right":  { "x": 179, "y": 436, "width": 43, "height": 157, rotate: -5 },
-  "leg_bottom_left":   { "x": 135, "y": 430, "width": 45, "height": 200, rotate: 3 },
-  
-  "leg_top_right":    { "x": 176, "y": 259, "width": 62, "height": 210 },
-  "leg_top_left":     { "x": 120, "y": 265, "width": 54, "height": 205 },
-  
-  "foot_right":       { "x": 174, "y": 576, "width": 32, "height": 96, rotate: -6 },
-  "foot_left":        { "x": 154, "y": 602, "width": 37, "height": 96, rotate: 4 },
-  
-  "body_bottom":      { "x": 126, "y": 197, "width": 102, "height": 113 },
-  "body_top":         { "x": 127, "y": 75,  "width": 119, "height": 175 },
-
-  "arm_bottom_right": { "x": 230, "y": 225, "width": 30, "height": 102 },
-  "arm_top_right":    { "x": 222, "y": 131, "width": 30, "height": 112 },
-  "hand_right":       { "x": 239, "y": 308, "width": 30, "height": 61 },
-  
-  "head":             { "x": 155, "y": 5,  "width": 78, "height": 101 },
-  eye_left:           { "x": 156, "y": 59, "width": 20, "height": 14 },
-  eye_right:          { "x": 188, "y": 56, "width": 22, "height": 14 },
-
-  mei_l:              { "x": 157, "y": 53, "width": 16, "height": 4 },
-  mei_r:              { "x": 190, "y": 52, "width": 21, "height": 4 },
-  
-  mouth:              { "x": 173, "y": 87, "width": 19, "height": 7 },
-
-  hair:               { "x": 145, "y": -1, "width": 98, "height": 108 },
+  "xiaobi_L1": { "x": 106, "y": 223, "width": 40, "height": 109 },
+  "dabi_L1": { "x": 128, "y": 124, "width": 39, "height": 112 },
+  "shou_L1": { "x": 104, "y": 305, "width": 28, "height": 59 },
+  "xiaotui_R": { "x": 179, "y": 436, "width": 43, "height": 157, rotate: -5, offsetX: -7, offsetY: 0 },
+  "xiaotui_L": { "x": 135, "y": 430, "width": 45, "height": 200, rotate: 3, offsetX: 5, offsetY: 0 },
+  "datui_R": { "x": 176, "y": 259, "width": 62, "height": 210 },
+  "datui_L": { "x": 120, "y": 265, "width": 54, "height": 205, offsetX: 54, offsetY: 0 },
+  "jiao_R1": { "x": 174, "y": 576, "width": 32, "height": 96, rotate: -6, offsetX: -5, offsetY: 0 },
+  "jiao_L1": { "x": 154, "y": 602, "width": 37, "height": 96, rotate: 4, offsetX: 4, offsetY: 0 },
+  "yao1": { "x": 126, "y": 197, "width": 102, "height": 113 },
+  "xiong": { "x": 127, "y": 75, "width": 119, "height": 175 },
+  "xiaobi_R1": { "x": 230, "y": 225, "width": 30, "height": 102 },
+  "dabi_R1": { "x": 222, "y": 131, "width": 30, "height": 112 },
+  "shou_R1": { "x": 239, "y": 308, "width": 30, "height": 61 },
+  "tou": { "x": 155, "y": 5, "width": 78, "height": 101, offsetX: 78, offsetY: 0 },
+  "zhengyan": { "x": 155, "y": 58, "width": 20, "height": 14, offsetX: 55, offsetY: 0 },
+  "mei": { "x": 157, "y": 52, "width": 16, "height": 4 },
+  "zui": { "x": 173, "y": 87, "width": 19, "height": 7 },
+  "toufaqian1": { "x": 145, "y": -2, "width": 98, "height": 108 },
 };
 
-type IPosition = {
-  key: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  scaleX?: number;
-  scaleY?: number;
-  spriteX: number;
-  spriteY: number;
-  spriteWidth: number;
-  spriteHeight: number;
-  rotate?: number;
-}
-
-type ISprite = {
-  xy: number[]; // xy
-  size: number[]; // size
-  rotate?: boolean;
-};
-
-type ISlot = {name: string; bone: string; attachment?: string};
-
-export default function SkiaCharacter() {
-  // const bone =;
-  const [bone, setBone] = useState<String[]>([]);
-  const [bonePosition, setBonePosition] = useState<Map<string, IPosition>>();
+export default function SkiaCharacter({ config, selectedOutfits }: { config: any; selectedOutfits?: Record<string, string> }) {
   const [sprites, setSprites] = useState<SkRect[]>([]);
   const [transforms, setTransforms] = useState<SkRSXform[]>([]);
-  const sprite = useImage(require('../../assets/skia/body_girl.png'));
-  // useEffect(() => { 
-  //   const parts = Object.values(PARTS);
-  //   setSprites(parts.map((p) => Skia.XYWHRect(p.x, p.y, p.w, p.h)));
-  //   setTransforms(parts.map((p) => {
-  //     if (p?.direction === 0) {
-  //       return Skia.RSXform(0, 1, p.px, p.py);
-  //     }
-  //     return Skia.RSXform(1, 0, p.px, p.py);
-  //   }));
-  // }, [PARTS]);
-  const offsetX = 40;
-  const offsetY = 10;
-  const sprite_base = {
-    head: useImage(require('../../assets/skia/base_body/head.png')),
-    body_top: useImage(require('../../assets/skia/base_body/body_top.png')),
-    body_bottom: useImage(require('../../assets/skia/base_body/body_bottom.png')),
+  const spriteImage = useImage(require('../../assets/skia/body_girl.png'));
+  const baseOffsetX = 60;
+  const baseOffsetY = 30;
 
-    hand_right: useImage(require('../../assets/skia/base_body/hand_right.png')),
-    hand_left: useImage(require('../../assets/skia/base_body/hand_left.png')),
-    foot_right: useImage(require('../../assets/skia/base_body/foot_right.png')),
-    foot_left: useImage(require('../../assets/skia/base_body/foot_left.png')),
-    
-    arm_top_right: useImage(require('../../assets/skia/base_body/arm_top_right.png')),
-    arm_top_left: useImage(require('../../assets/skia/base_body/arm_top_left.png')),
-    
-    arm_bottom_right: useImage(require('../../assets/skia/base_body/arm_bottom_right.png')),
-    arm_bottom_left: useImage(require('../../assets/skia/base_body/arm_bottom_left.png')),
-
-    eye_left: useImage(require('../../assets/skia/base_body/eye_left.png')),
-    eye_right: useImage(require('../../assets/skia/base_body/eye_right.png')),
-    mouth: useImage(require('../../assets/skia/base_body/mouth.png')),
-    mei_l: useImage(require('../../assets/skia/base_body/mei_l.png')),
-    mei_r: useImage(require('../../assets/skia/base_body/mei_r.png')),
-    hair: useImage(require('../../assets/skia/base_body/hair.png')),
-    leg_top_right: useImage(require('../../assets/skia/base_body/leg_top_right.png')),
-    leg_top_left: useImage(require('../../assets/skia/base_body/leg_top_left.png')),
-    leg_bottom_right: useImage(require('../../assets/skia/base_body/leg_bottom_right.png')),
-    leg_bottom_left: useImage(require('../../assets/skia/base_body/leg_bottom_left.png')),
-  };
-  useEffect(() => { 
-    // 使用示例（游戏启动时预加载配置） 女主.json
-    const config = loadLocalJson(require('../../assets/data/nvzhu.json'));
+  useEffect(() => {
     if (config) {
       console.log('配置加载成功');
-      const {posi, skins, slots, bones} = config;
-      const att = skins[0].attachments;
-      const keys: string[] = [];
+      const {posi} = config;
       const mapPosition: IPosition[] = [];
-      slots.filter((item: {name: string; bone: string; attachment?: string}) => typeof item.attachment === 'string').forEach((item: ISlot) => {
-        const key = item.name;
-        keys.push(key);
-        if (!att[key][key] || !att[key]['kong']) {
-          console.log('未找到 position:', key);
-          // return;
+
+      Object.keys(BASE_POSITION).forEach((key) => {
+        // 从selectedOutfits中获取对应的选中装扮
+        let outfitKey = key;
+        
+        // 根据BASE_POSITION的key映射到对应的分类
+        if (selectedOutfits) {
+          if (key === 'toufaqian1') {
+            outfitKey = selectedOutfits['toushi'] || key;
+          } else if (key === 'xiong') {
+            outfitKey = selectedOutfits['top'] || key;
+          } else if (key === 'datui_L' || key === 'datui_R' || key === 'xiaotui_L' || key === 'xiaotui_R') {
+            outfitKey = selectedOutfits['bottom'] || key;
+          } else if (key === 'jiao_L1' || key === 'jiao_R1') {
+            outfitKey = selectedOutfits['shoes'] || key;
+          } else if (key === 'shou_L1' || key === 'shou_R1' || key === 'xiaobi_L1' || key === 'xiaobi_R1' || key === 'dabi_L1' || key === 'dabi_R1') {
+            // 暂不处理手套等配饰
+          } else if (key === 'zhengyan' || key === 'mei' || key === 'zui') {
+            // 暂不处理面部特征
+          }
         }
-        const b = bones.find((b: {x: number; y: number; name: string}) => b.name === item.bone);
-        if (!b) {
-          console.log('未找到 bone:', item.bone);
-          // return;
-        }
-        const { x, y } = b;
-        const { width, height, scaleX, scaleY, rotate } = (att[key][key] || att[key]['kong']) as IPosition;
-        const sprite = posi[item.attachment || 'kong'] as ISprite;
-        if (!sprite) {
-          console.log('未找到 sprite:', key);
-        }
-        mapPosition.push({key, x, y, width, height, rotate, scaleX, scaleY, spriteX: sprite.xy[0], spriteY: sprite.xy[1], spriteWidth: sprite.size[0], spriteHeight: sprite.size[1]});
+        
+        const { x, y, width, height, rotate, offsetX, offsetY } = BASE_POSITION[key];
+        const sprite = posi[outfitKey || 'kong'] as ISprite;
+        const { xy, size, offset } = sprite;
+        const needRotate = sprite.rotate;
+        const [spriteWidth, spriteHeight] = needRotate ? size.toReversed() : size;
+        const [spriteX, spriteY] = xy;
+        // console.log('diff:', key, width - spriteWidth, height - spriteHeight);
+
+        mapPosition.push({
+          key,
+          x,
+          y,
+          width,
+          height,
+          rotation: (rotate || 0) + (needRotate ? 90 : 0),
+          spriteX,
+          spriteY,
+          spriteWidth,
+          spriteHeight,
+          needRotate: needRotate,
+          offsetX: offsetX || 0,
+          offsetY: offsetY || 0,
+          ox: offset[0] || 0,
+          oy: offset[1] || 0,
+        });
       });
-      console.log('keys:', keys);
-      // sprite 位置
+      // sprite 位置: x,y在精灵图中的位置，rect取一个矩形
       setSprites(mapPosition.map((p) => {
         const { spriteX, spriteY, spriteWidth, spriteHeight } = p;
         return Skia.XYWHRect(spriteX, spriteY, spriteWidth, spriteHeight);
       }));
-      // sprite 旋转
+      // sprite 旋转: 精灵图旋转角度, + xy 偏移
+      // 旋转以sprites左上角为旋转中心，所以需要修正旋转位置
       setTransforms(mapPosition.map((p) => {
-        if (p?.rotate === 0) {
-          return Skia.RSXform(0, 1, p.x, p.y);
-        }
-        return Skia.RSXform(1, 0, p.x, p.y);
+        const { key, x, y, rotation, spriteWidth, spriteHeight, ox, oy } = p;
+        const needRotate = p.needRotate;
+        // console.log('rotation:', rotation, key);
+        const [cx, cy] = [spriteWidth / 2, spriteHeight / 2];
+        // 角度 → 弧度
+        const rad = (rotation || 0) * Math.PI / 180;
+        const scos = Math.cos(rad);
+        const ssin = Math.sin(rad);
+
+        // ✅ 中心旋转修正公式（必须加！）
+        // const tx = x - (-cy * scos - cx * ssin);
+        // const ty = y - (-cy * ssin + cx * scos);
+
+        const tx = x + (needRotate ? spriteHeight : p.offsetX)  // - (cx * scos - cy * ssin);
+        const ty = y + (needRotate ? 0 : p.offsetY)  // - (cx * ssin + cy * scos);
+        const debug = needRotate || rotation;
+        const xp = (debug ? tx : x) - ox;
+        const yp = (debug ? ty : y) - oy;
+        console.log('center', key, x, y, xp, yp);
+        // console.log('diff t', key, x - xp, y - yp, spriteWidth, spriteHeight);
+        return Skia.RSXform(scos, ssin, xp, yp);
       }));
-      // setBonePosition(map);
-      setBone(keys);
     }
-  }, []);
+  }, [config, selectedOutfits]);
 
 
   return (
     <View style={styles.container}>
       {/* Skia Canvas 换装核心 */}
       <Canvas style={styles.canvas}>
-        {Object.keys(BASE_POSITION).map((key) => {
-          const sKey: keyof typeof sprite_base = key as keyof typeof sprite_base;
-          const { x, y, width, height, rotate } = BASE_POSITION[sKey];
-          let transform = undefined;
-          if (rotate) {
-            transform = [{ rotate: rotate * Math.PI / 180 }];
-          }
-          const scale = 0.8;
-          const renderX = (x * scale) + offsetX;
-          const renderY = (y * scale) + offsetY;
-          const renderWidth = width * scale;
-          const renderHeight = height * scale;
-          return (
-            <Image
-              key={key}
-              image={sprite_base[sKey]}
-              x={renderX}
-              y={renderY}
-              width={renderWidth}
-              height={renderHeight}
-              origin={{x: renderX + renderWidth / 2, y: renderY + renderHeight / 2}}
-              transform={transform}
-            />
-        )})}
-        {/* {sprite && <Atlas image={sprite} sprites={sprites} transforms={transforms} />} */}
+        <Group>
+          {spriteImage && <Atlas image={spriteImage} sprites={sprites} transforms={transforms} />}
+        </Group>
       </Canvas>
     </View>
   );

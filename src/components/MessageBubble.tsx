@@ -24,12 +24,12 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, dollName, naviga
   const isUser = message.isUser;
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const { theme, getThemeColors } = useThemeStore();
+  const { getThemeColors } = useThemeStore();
   const themeColors = getThemeColors();
   const { t, language } = useTranslation();
   
   // 获取音频缓存和人物配置
-  const { getCache, setCache, hasValidCache } = useAudioCacheStore();
+  const { getCache, setCache } = useAudioCacheStore();
   const { config } = useDollStore();
 
   // 组件卸载时停止播放

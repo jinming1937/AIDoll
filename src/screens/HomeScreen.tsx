@@ -18,8 +18,8 @@ import { useChatStore } from '../store/chatStore';
 import { useThemeStore } from '../store/themeStore';
 import { useAudioStore } from '../store/audioStore';
 import aiService from '../services/aiService';
-import { useTranslation } from '../hooks/useTranslation';
 import { RootStackParamList } from '../../App';
+import { loadLocalJson } from '../util/lib';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -30,12 +30,19 @@ interface HomeScreenProps {
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { config, setAnimation } = useDollStore();
   const { messages, addMessage, isAITyping } = useChatStore();
-  const { theme, getThemeColors } = useThemeStore();
+  const { getThemeColors } = useThemeStore();
   const { isMuted, toggleMute } = useAudioStore();
-  const { t } = useTranslation();
   const outfitPanelRef = useRef<OutfitPanelRef>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [isChatFloatingVisible, setIsChatFloatingVisible] = useState(false);
+  const [selectedOutfits, setSelectedOutfits] = useState<Record<string, string>>({
+    maozi: '',
+    toushi: '',
+    top: '',
+    bottom: '',
+    jewelry: '',
+    shoes: '',
+  });
 
   // 订阅 theme 变化，确保组件重新渲染
   const themeColors = getThemeColors();
@@ -46,7 +53,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [fadeAnim]);
 
   const handleVoiceResult = useCallback(async (text: string) => {
     if (!text.trim()) return;
@@ -90,7 +97,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     setIsChatFloatingVisible(!isChatFloatingVisible);
   };
 
-
+  // 使用示例（游戏启动时预加载配置） 女主.json
+    const gameConfig = loadLocalJson(require('../../assets/data/nvzhu.json'));
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: themeColors.background }]}>
@@ -128,15 +136,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         {/* Outfit Panel */}
         <OutfitPanel
           ref={outfitPanelRef}
+          config={gameConfig}
           onSelectOutfit={(category, outfitId) => {
             console.log('Selected outfit:', category, outfitId);
-            // TODO: Update doll appearance based on selection
+            setSelectedOutfits(prev => ({ ...prev, [category]: outfitId }));
           }}
         />
 
         {/* Doll Character */}
         <View style={styles.dollContainer}>
-          <DollCharacter />
+          <DollCharacter config={gameConfig} selectedOutfits={selectedOutfits} />
         </View>
       </View>
 

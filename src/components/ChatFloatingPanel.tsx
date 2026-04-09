@@ -21,7 +21,7 @@ import { Message } from '../types';
 import { RootStackParamList } from '../../App';
 
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 type ChatFloatingPanelNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -54,7 +54,7 @@ const ChatFloatingPanel = forwardRef<ChatFloatingPanelRef, ChatFloatingPanelProp
         duration: 500,
         useNativeDriver: true,
       }).start();
-    }, []);
+    }, [fadeAnim]);
 
     useEffect(() => {
       if (visible) {
@@ -70,7 +70,7 @@ const ChatFloatingPanel = forwardRef<ChatFloatingPanelRef, ChatFloatingPanelProp
           useNativeDriver: true,
         }).start();
       }
-    }, [visible]);
+    }, [visible, floatingAnim]);
 
     useEffect(() => {
       const keyboardDidShowListener = Keyboard.addListener(
@@ -201,6 +201,8 @@ const ChatFloatingPanel = forwardRef<ChatFloatingPanelRef, ChatFloatingPanelProp
     );
   }
 );
+
+ChatFloatingPanel.displayName = 'ChatFloatingPanel';
 
 const styles = StyleSheet.create({
   keyboardAvoidingView: {

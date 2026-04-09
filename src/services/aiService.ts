@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as Speech from 'expo-speech';
+import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DollConfig } from '../types';
 import memoStorage from './memoStorage';
@@ -70,7 +71,7 @@ class AIService {
       if (configJson) {
         this.config = { ...this.config, ...JSON.parse(configJson) };
       }
-    } catch (e) {
+    } catch {
       console.log('No saved AI config found');
     }
   }
@@ -275,36 +276,7 @@ ${this.getFunctionalPrompt()}`;
     const now = new Date();
     const currentDate = now.toLocaleString(); // 2026-03-29
     const functional = `
-# 重要：时间规则
-当前真实日期 时间：${currentDate}
-用户说的“今天、明天、后天”必须基于这个真实日期计算，绝对不能自己编造年份！
-
-# 重要规则（必须严格遵守）
-1. 当用户意图是 备忘录/日程 相关操作时，**只输出结构化指令**，不允许说“已创建”“好的”等自然语言。
-2. 只有纯聊天、情绪陪伴时，才使用自然口语回复。
-3. 信息不足时，只礼貌追问缺失内容，不生成指令、不编造信息。
-
-# 支持功能
-- 备忘录：创建、查看、删除
-- 日程：创建、查看、删除
-- 日常聊天与情绪陪伴
-
-# 强制输出格式
-创建备忘录：[MEMO:CREATE] 标题 | 内容
-查看备忘录：[MEMO:LIST]
-删除备忘录：[MEMO:DELETE] 备忘录标题
-
-创建日程：[CALENDAR:CREATE] 标题 | YYYY-MM-DD | HH:MM | 描述
-查看日程：[CALENDAR:LIST] YYYY-MM-DD
-删除日程：[CALENDAR:DELETE] 日程标题
-
-非工具类的日常聊天、情绪陪伴，用自然口语正常回复即可，不需要格式。
-如果信息不完整，礼貌追问，不随意编造。
-
-回复简短友好、自然亲切，适合语音对话。
-既能认真完成工具任务，也能温柔陪伴聊天，提供情绪价值，语气贴合人设。`; 
-    const functionalV2 = `
-    【重要：时间规则】
+【重要：时间规则】
 当前真实日期：${currentDate}
 用户说的“今天、明天、后天”必须基于这个真实日期计算，绝对不能自己编造年份！
 
@@ -327,7 +299,7 @@ ${this.getFunctionalPrompt()}`;
 
 非工具类的日常聊天、情绪陪伴，用自然口语正常回复即可，不需要格式。
 工具操作按指令格式输出，严格使用给定的当前日期计算，绝不使用错误年份。`;
-    return functionalV2;
+    return functional;
   }
 
   private async parseResponse(content: string): Promise<AIResponse> {
@@ -422,7 +394,6 @@ ${this.getFunctionalPrompt()}`;
           return { text: text || (dateStr ? `该日期没有日程` : '你还没有创建任何日程') };
         }
         const eventList = events.map(event => {
-          const eventDate = new Date(event.date).toLocaleDateString();
           const eventTime = event.time ? ` ${event.time}` : '';
           return `• ${event.title}${eventTime}：${event.description || '无描述'}`;
         }).join('\n');
@@ -568,7 +539,6 @@ ${this.getFunctionalPrompt()}`;
     if (audioUrl) {
       // 使用大模型TTS播放
       try {
-        const { Audio } = require('expo-av');
         const { sound } = await Audio.Sound.createAsync(
           { uri: audioUrl },
           { shouldPlay: true }

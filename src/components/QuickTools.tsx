@@ -4,12 +4,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
-  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeStore } from '../store/themeStore';
 
-const { width } = Dimensions.get('window');
+
 
 interface QuickToolsProps {
   onCalendarPress?: () => void;

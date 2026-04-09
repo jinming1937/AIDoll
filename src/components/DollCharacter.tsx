@@ -1,14 +1,17 @@
 import React from 'react';
 import SkiaCharacter from './SkiaCharacter';
+// import Demo from './Demo';
 // import LottieDollCharacter from './LottieDollCharacter';
 
 interface DollCharacterProps {
-  scale?: number;
+  config?: any;
+  selectedOutfits?: Record<string, string>;
 }
 
-const DollCharacter: React.FC<DollCharacterProps> = ({ scale = 1 }) => {
+const DollCharacter: React.FC<DollCharacterProps> = ({ config, selectedOutfits }) => {
   // return <LottieDollCharacter scale={scale} />;
-  return <SkiaCharacter />;
+  return <SkiaCharacter config={config} selectedOutfits={selectedOutfits} />;
+  // return <Demo />;
 };
 
 export default DollCharacter;

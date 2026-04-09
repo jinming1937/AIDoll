@@ -147,9 +147,10 @@ export const translations = {
     },
     // 装扮
     outfit: {
-      hat: '帽子',
-      hair: '头发',
+      maozi: '帽子',
+      toushi: '头饰',
       top: '上衣',
+      jewelry: '首饰',
       bottom: '下装',
       shoes: '鞋子',
       none: '无',
@@ -324,9 +325,10 @@ export const translations = {
     },
     // Outfit
     outfit: {
-      hat: 'Hat',
-      hair: 'Hair',
+      maozi: 'Hat',
+      toushi: 'Hair',
       top: 'Top',
+      jewelry: 'Jewelry',
       bottom: 'Bottom',
       shoes: 'Shoes',
       none: 'None',
@@ -397,7 +399,7 @@ class I18nService {
         this.currentLanguage = savedLang;
         this.notifyListeners();
       }
-    } catch (e) {
+    } catch {
       console.log('No saved language found');
     }
   }

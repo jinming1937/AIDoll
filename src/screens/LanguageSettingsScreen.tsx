@@ -11,7 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from '../hooks/useTranslation';
-import { i18n, Language } from '../i18n';
+import { Language } from '../i18n';
 import { useThemeStore } from '../store/themeStore';
 
 type RootStackParamList = {
