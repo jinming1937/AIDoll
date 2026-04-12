@@ -91,36 +91,3 @@ export const getHideKey = () => {
   const base = getBaseKey();
   return [...base, ...other, ...shoes]; 
 }
-
-// const outfitCategory
-
-
-// export function makeRotatedSprite_FIX90(
-//   targetX: number,  // 你希望精灵【中心】在屏幕的 X
-//   targetY: number,  // 你希望精灵【中心】在屏幕的 Y
-//   srcW: number,     // 子图原始【正】宽度
-//   srcH: number,     // 子图原始【正】高度
-//   angle: number    // 你想要的最终旋转角度
-// ) {
-//   // =======================
-//   // 关键 1：逆时针90° 修正（你是对的，用 +90）
-//   // =======================
-//   const finalRad = ((angle + 90) * Math.PI) / 180;
-
-//   const scos = Math.cos(finalRad);
-//   const ssin = Math.sin(finalRad);
-
-//   // =======================
-//   // 关键 2：宽高交换（你做对了）
-//   // =======================
-//   const cx = srcH / 2;
-//   const cy = srcW / 2;
-
-//   // =======================
-//   // 关键 3：坐标系旋转后的修正公式（这就是你位置错的原因！）
-//   // =======================
-//   const tx = targetX - (-cy * scos - cx * ssin);
-//   const ty = targetY - (-cy * ssin + cx * scos);
-
-//   return rsxform({ scos, ssin, tx, ty });
-// }

@@ -4,6 +4,1673 @@
 "format": "RGBA8888",
 "filter": "Linear,Linear",
 "repeat": "none",
+"slots": [
+  {
+    "name": "gonxin4",
+    "bone": "gonxin4"
+  },
+  {
+    "name": "gonxin5",
+    "bone": "gonxin5"
+  },
+  {
+    "name": "toufahou1",
+    "bone": "toufahou1",
+    "attachment": "kong"
+  },
+  {
+    "name": "xiaobii_L1",
+    "bone": "xiaobii_L1",
+    "attachment": "xiaobii_L1"
+  },
+  {
+    "name": "shou_L1",
+    "bone": "shou_L1",
+    "attachment": "shou_L1"
+  },
+  {
+    "name": "dabi_L1",
+    "bone": "dabi_L1",
+    "attachment": "dabi_L1"
+  },
+  {
+    "name": "xiuzi1_L1",
+    "bone": "xiaobii_L1",
+    "attachment": "kong"
+  },
+  {
+    "name": "xiuzi2_L1",
+    "bone": "dabi_L1",
+    "attachment": "kong"
+  },
+  {
+    "name": "xiaotui_R",
+    "bone": "xiaotui_R1",
+    "attachment": "xiaotui_R"
+  },
+  {
+    "name": "xiaotui_R1",
+    "bone": "xiaotui_R1",
+    "attachment": "kong"
+  },
+  {
+    "name": "datui_R",
+    "bone": "datui_R1",
+    "attachment": "datui_R"
+  },
+  {
+    "name": "datui_R1",
+    "bone": "datui_R1",
+    "attachment": "kong"
+  },
+  {
+    "name": "jiao_R1",
+    "bone": "xie_R1",
+    "attachment": "jiao_R1"
+  },
+  {
+    "name": "xie_R1",
+    "bone": "xie_R1",
+    "attachment": "xie_R10"
+  },
+  {
+    "name": "xiaotui_L",
+    "bone": "xiaotui_L1",
+    "attachment": "xiaotui_L"
+  },
+  {
+    "name": "jiao_L1",
+    "bone": "xie_L1",
+    "attachment": "jiao_L1"
+  },
+  {
+    "name": "xiaotui_L1",
+    "bone": "xiaotui_L1",
+    "attachment": "kong"
+  },
+  {
+    "name": "xie_L1",
+    "bone": "xie_L1",
+    "attachment": "xie_L10"
+  },
+  {
+    "name": "datui_L",
+    "bone": "datui_L1",
+    "attachment": "datui_L"
+  },
+  {
+    "name": "datui_L1",
+    "bone": "datui_L1",
+    "attachment": "kong"
+  },
+  {
+    "name": "yao",
+    "bone": "shangyiyao1",
+    "attachment": "yao1"
+  },
+  {
+    "name": "xiong",
+    "bone": "shangyi1",
+    "attachment": "xiong"
+  },
+  {
+    "name": "qun_R1",
+    "bone": "qun_R1",
+    "attachment": "qun_R10"
+  },
+  {
+    "name": "qun_L1",
+    "bone": "qun_L1",
+    "attachment": "qun_L10"
+  },
+  {
+    "name": "qun_M1",
+    "bone": "qun_M1",
+    "attachment": "qun_M10"
+  },
+  {
+    "name": "xiaobi_R1",
+    "bone": "xiaobi_R1",
+    "attachment": "xiaobi_R1"
+  },
+  {
+    "name": "shangyiyao1",
+    "bone": "shangyiyao1",
+    "attachment": "shangyiyao10"
+  },
+  {
+    "name": "shangyi1",
+    "bone": "shangyi1",
+    "attachment": "shangyi10"
+  },
+  {
+    "name": "bao1",
+    "bone": "bao2",
+    "attachment": "bao1"
+  },
+  {
+    "name": "shou_R1",
+    "bone": "shou_R1",
+    "attachment": "shou_R1"
+  },
+  {
+    "name": "dabi_R1",
+    "bone": "dabi_R1",
+    "attachment": "dabi_R1"
+  },
+  {
+    "name": "xiuzi1_R1",
+    "bone": "xiaobi_R1",
+    "attachment": "kong"
+  },
+  {
+    "name": "shoushi1",
+    "bone": "xiaobi_R1",
+    "attachment": "shoushi10"
+  },
+  {
+    "name": "xiuzi2_R1",
+    "bone": "dabi_R1",
+    "attachment": "kong"
+  },
+  {
+    "name": "tou",
+    "bone": "biyan",
+    "attachment": "tou"
+  },
+  {
+    "name": "erhuan1",
+    "bone": "erhuan1",
+    "attachment": "kong"
+  },
+  {
+    "name": "zui",
+    "bone": "biyan",
+    "attachment": "zui"
+  },
+  {
+    "name": "mei",
+    "bone": "biyan",
+    "attachment": "mei"
+  },
+  {
+    "name": "biyan",
+    "bone": "biyan",
+    "attachment": "zhengyan"
+  },
+  {
+    "name": "toufaqian1",
+    "bone": "biyan",
+    "attachment": "toufaqian10"
+  },
+  {
+    "name": "toushi1",
+    "bone": "biyan",
+    "attachment": "toushi10"
+  },
+  {
+    "name": "gonxin",
+    "bone": "gonxin"
+  },
+  {
+    "name": "gonxin2",
+    "bone": "gonxin2"
+  },
+  {
+    "name": "gonxin3",
+    "bone": "gonxin3"
+  }
+],
+"skins": [
+  {
+    "name": "default",
+    "attachments": {
+      "bao1": {
+        "bao1": {
+          "x": 59.58,
+          "y": 16.79,
+          "rotation": 87.18,
+          "width": 105,
+          "height": 131
+        }
+      },
+      "biyan": {
+        "biyan": {
+          "x": 23.79,
+          "y": 11.93,
+          "rotation": -90.86,
+          "width": 54,
+          "height": 12
+        },
+        "zhengyan": {
+          "x": 21.8,
+          "y": 12.46,
+          "rotation": -90.86,
+          "width": 55,
+          "height": 22
+        }
+      },
+      "dabi_L1": {
+        "dabi_L1": {
+          "x": 45.4,
+          "y": 2.1,
+          "rotation": 101.43,
+          "width": 41,
+          "height": 114
+        }
+      },
+      "dabi_R1": {
+        "dabi_R1": {
+          "x": 42.95,
+          "y": -1.61,
+          "rotation": 84.99,
+          "width": 32,
+          "height": 116
+        }
+      },
+      "datui_L": {
+        "datui_L": {
+          "x": 82.61,
+          "y": -1.92,
+          "rotation": 85.03,
+          "width": 56,
+          "height": 207
+        }
+      },
+      "datui_L1": {
+        "datui_L3": {
+          "x": 82.61,
+          "y": -1.92,
+          "scaleX": 1.0382,
+          "scaleY": 1.0382,
+          "rotation": 85.03,
+          "width": 56,
+          "height": 206
+        },
+        "datui_L6": {
+          "x": 8.09,
+          "y": 3.55,
+          "scaleX": 1.0382,
+          "scaleY": 1.0382,
+          "rotation": 85.03,
+          "width": 59,
+          "height": 67
+        },
+        "datui_L7": {
+          "x": 84.9,
+          "y": -2.83,
+          "scaleX": 1.0468,
+          "scaleY": 1.0468,
+          "rotation": 85.03,
+          "width": 55,
+          "height": 205
+        },
+        "kong": {
+          "x": 82.61,
+          "y": -1.92,
+          "scaleX": 1.0382,
+          "scaleY": 1.0382,
+          "rotation": 85.03,
+          "width": 10,
+          "height": 10
+        }
+      },
+      "datui_R": {
+        "datui_R": {
+          "x": 74.61,
+          "y": 6.47,
+          "rotation": 93.28,
+          "width": 64,
+          "height": 212
+        }
+      },
+      "datui_R1": {
+        "datui_R3": {
+          "x": 74.54,
+          "y": 7.48,
+          "scaleX": 1.0215,
+          "scaleY": 1.0215,
+          "rotation": 93.28,
+          "width": 63,
+          "height": 211
+        },
+        "datui_R6": {
+          "x": 1.74,
+          "y": 0.99,
+          "scaleX": 1.0215,
+          "scaleY": 1.0215,
+          "rotation": 95.66,
+          "width": 66,
+          "height": 71
+        },
+        "datui_R7": {
+          "x": 73.89,
+          "y": 6.59,
+          "scaleX": 1.031,
+          "scaleY": 1.031,
+          "rotation": 93.58,
+          "width": 62,
+          "height": 210
+        },
+        "kong": {
+          "x": 74.54,
+          "y": 7.48,
+          "scaleX": 1.0178,
+          "scaleY": 1.0178,
+          "rotation": 93.28,
+          "width": 10,
+          "height": 10
+        }
+      },
+      "erhuan1": {
+        "erhuan1": {
+          "x": 9.51,
+          "y": 0.41,
+          "rotation": 90,
+          "width": 10,
+          "height": 28
+        },
+        "erhuan2": {
+          "x": 11.61,
+          "y": 0.41,
+          "rotation": 90,
+          "width": 15,
+          "height": 37
+        },
+        "kong": {
+          "x": 11.61,
+          "y": 0.41,
+          "rotation": 90,
+          "width": 10,
+          "height": 10
+        }
+      },
+      "gonxin": {
+        "gonxin": {
+          "x": 1.43,
+          "y": -0.47,
+          "scaleX": 0.3554,
+          "scaleY": 0.3554,
+          "width": 104,
+          "height": 85
+        }
+      },
+      "gonxin2": {
+        "gonxin": {
+          "x": 1.43,
+          "y": -0.47,
+          "scaleX": 0.3554,
+          "scaleY": 0.3554,
+          "width": 104,
+          "height": 85
+        }
+      },
+      "gonxin3": {
+        "gonxin": {
+          "x": 1.43,
+          "y": -0.47,
+          "scaleX": 0.3554,
+          "scaleY": 0.3554,
+          "width": 104,
+          "height": 85
+        }
+      },
+      "gonxin4": {
+        "gonxin": {
+          "x": -0.17,
+          "y": -0.87,
+          "scaleX": 0.3554,
+          "scaleY": 0.3554,
+          "width": 104,
+          "height": 85
+        }
+      },
+      "gonxin5": {
+        "gonxin": {
+          "x": -0.17,
+          "y": -0.87,
+          "scaleX": 0.3554,
+          "scaleY": 0.3554,
+          "width": 104,
+          "height": 85
+        }
+      },
+      "jiao_L1": {
+        "jiao_L1": {
+          "x": 41.24,
+          "y": 3.36,
+          "rotation": 81.16,
+          "width": 39,
+          "height": 98
+        }
+      },
+      "jiao_R1": {
+        "jiao_R1": {
+          "x": 38.5,
+          "y": -2.31,
+          "rotation": 97.97,
+          "width": 34,
+          "height": 98
+        }
+      },
+      "mei": {
+        "mei": {
+          "x": 33.32,
+          "y": 13.29,
+          "rotation": -90.86,
+          "width": 53,
+          "height": 7
+        }
+      },
+      "qun_L1": {
+        "kong": {
+          "x": 49.74,
+          "y": 3.34,
+          "scaleX": 1.0258,
+          "scaleY": 1.0258,
+          "rotation": 94.18,
+          "width": 10,
+          "height": 10
+        },
+        "qun_L1": {
+          "x": 42.48,
+          "y": 11.04,
+          "scaleX": 1.0258,
+          "scaleY": 1.0258,
+          "rotation": 96.44,
+          "width": 59,
+          "height": 120
+        },
+        "qun_L2": {
+          "x": 49.74,
+          "y": 3.34,
+          "scaleX": 1.0258,
+          "scaleY": 1.0258,
+          "rotation": 94.18,
+          "width": 29,
+          "height": 134
+        },
+        "qun_L4": {
+          "x": 196.44,
+          "y": -22.4,
+          "scaleX": 1.0258,
+          "scaleY": 1.0258,
+          "rotation": 97.87,
+          "width": 161,
+          "height": 480
+        },
+        "qun_L5": {
+          "x": 73.39,
+          "y": 0.02,
+          "scaleX": 1.0258,
+          "scaleY": 1.0258,
+          "rotation": 97.87,
+          "width": 60,
+          "height": 161
+        },
+        "qun_L7": {
+          "x": 53.2,
+          "y": 0.04,
+          "scaleX": 1.0258,
+          "scaleY": 1.0258,
+          "rotation": 97.87,
+          "width": 72,
+          "height": 141
+        },
+        "qun_L8": {
+          "x": 109.79,
+          "y": 13.22,
+          "scaleX": 1.0258,
+          "scaleY": 1.0258,
+          "rotation": 97.87,
+          "width": 90,
+          "height": 290
+        },
+        "qun_L10": {
+          "x": 124.14,
+          "y": 25.95,
+          "scaleX": 1.0258,
+          "scaleY": 1.0258,
+          "rotation": 97.87,
+          "width": 79,
+          "height": 265
+        }
+      },
+      "qun_M1": {
+        "kong": {
+          "x": 65.06,
+          "y": 4.9,
+          "rotation": 89.12,
+          "width": 10,
+          "height": 10
+        },
+        "qun_M1": {
+          "x": 43.12,
+          "y": 2.41,
+          "rotation": 89.12,
+          "width": 97,
+          "height": 134
+        },
+        "qun_M2": {
+          "x": 65.06,
+          "y": 4.9,
+          "rotation": 89.12,
+          "width": 114,
+          "height": 117
+        },
+        "qun_M4": {
+          "x": 206.67,
+          "y": -2.82,
+          "rotation": 87.71,
+          "width": 279,
+          "height": 483
+        },
+        "qun_M5": {
+          "x": 81.89,
+          "y": -2.78,
+          "rotation": 87.71,
+          "width": 117,
+          "height": 161
+        },
+        "qun_M7": {
+          "x": 59.48,
+          "y": -6.54,
+          "rotation": 91.87,
+          "width": 107,
+          "height": 142
+        },
+        "qun_M8": {
+          "x": 116.79,
+          "y": 6.09,
+          "rotation": 91.87,
+          "width": 114,
+          "height": 301
+        },
+        "qun_M9": {
+          "x": 54.69,
+          "y": 7.39,
+          "rotation": 86.9,
+          "width": 160,
+          "height": 139
+        },
+        "qun_M10": {
+          "x": 128.99,
+          "y": 2.76,
+          "rotation": 91.67,
+          "width": 103,
+          "height": 285
+        }
+      },
+      "qun_R1": {
+        "kong": {
+          "x": 52.92,
+          "y": -33.18,
+          "scaleX": 1.0244,
+          "scaleY": 1.0244,
+          "rotation": 76.71,
+          "width": 10,
+          "height": 10
+        },
+        "qun_R1": {
+          "x": 45.62,
+          "y": -5.71,
+          "scaleX": 1.0244,
+          "scaleY": 1.0244,
+          "rotation": 76.71,
+          "width": 67,
+          "height": 122
+        },
+        "qun_R2": {
+          "x": 52.92,
+          "y": -33.18,
+          "scaleX": 1.0244,
+          "scaleY": 1.0244,
+          "rotation": 76.71,
+          "width": 118,
+          "height": 127
+        },
+        "qun_R4": {
+          "x": 225.13,
+          "y": 62.76,
+          "scaleX": 1.0244,
+          "scaleY": 1.0244,
+          "rotation": 76.71,
+          "width": 303,
+          "height": 475
+        },
+        "qun_R5": {
+          "x": 84.91,
+          "y": -7.19,
+          "scaleX": 1.0244,
+          "scaleY": 1.0244,
+          "rotation": 76.71,
+          "width": 90,
+          "height": 149
+        },
+        "qun_R7": {
+          "x": 55.58,
+          "y": 6.56,
+          "scaleX": 1.0244,
+          "scaleY": 1.0244,
+          "rotation": 78.43,
+          "width": 114,
+          "height": 144
+        },
+        "qun_R8": {
+          "x": 117.98,
+          "y": -4.39,
+          "scaleX": 1.0244,
+          "scaleY": 1.0244,
+          "rotation": 78.31,
+          "width": 110,
+          "height": 290
+        },
+        "qun_R10": {
+          "x": 129.01,
+          "y": -18.34,
+          "scaleX": 1.0244,
+          "scaleY": 1.0244,
+          "rotation": 78.23,
+          "width": 72,
+          "height": 264
+        }
+      },
+      "shangyi1": {
+        "shangyi1": {
+          "x": 53.41,
+          "y": -7.49,
+          "rotation": -81.53,
+          "width": 122,
+          "height": 152
+        },
+        "shangyi2": {
+          "x": 53.11,
+          "y": -3.39,
+          "scaleX": 1.0403,
+          "scaleY": 1.0403,
+          "rotation": -81.53,
+          "width": 113,
+          "height": 153
+        },
+        "shangyi3": {
+          "x": 48.37,
+          "y": -8.32,
+          "scaleX": 1.0403,
+          "scaleY": 1.0403,
+          "rotation": -81.53,
+          "width": 123,
+          "height": 143
+        },
+        "shangyi4": {
+          "x": 52.09,
+          "y": -0.11,
+          "scaleX": 1.0403,
+          "scaleY": 1.0403,
+          "rotation": -81.53,
+          "width": 107,
+          "height": 158
+        },
+        "shangyi5": {
+          "x": 42.43,
+          "y": 2.94,
+          "scaleX": 1.0403,
+          "scaleY": 1.0403,
+          "rotation": -81.53,
+          "width": 99,
+          "height": 137
+        },
+        "shangyi6": {
+          "x": 50.66,
+          "y": -3.75,
+          "scaleX": 1.037,
+          "scaleY": 1.037,
+          "rotation": -81.53,
+          "width": 113,
+          "height": 126
+        },
+        "shangyi7": {
+          "x": 61.45,
+          "y": -4.85,
+          "scaleX": 1.037,
+          "scaleY": 1.037,
+          "rotation": -81.53,
+          "width": 122,
+          "height": 121
+        },
+        "shangyi8": {
+          "x": 43.33,
+          "y": 3.23,
+          "scaleX": 1.0305,
+          "scaleY": 1.0305,
+          "rotation": -81.53,
+          "width": 98,
+          "height": 136
+        },
+        "shangyi9": {
+          "x": 46.8,
+          "y": -7.95,
+          "scaleX": 1.037,
+          "scaleY": 1.037,
+          "rotation": -81.53,
+          "width": 125,
+          "height": 154
+        },
+        "shangyi10": {
+          "x": 42.83,
+          "y": -0.46,
+          "scaleX": 1.037,
+          "scaleY": 1.037,
+          "rotation": -81.53,
+          "width": 110,
+          "height": 136
+        }
+      },
+      "shangyiyao1": {
+        "kong": {
+          "x": 16.78,
+          "y": -6.08,
+          "scaleX": 1.0596,
+          "scaleY": 1.0596,
+          "rotation": -91.29,
+          "width": 10,
+          "height": 10
+        },
+        "shangyiyao1": {
+          "x": 33.17,
+          "y": -6.67,
+          "rotation": -91.29,
+          "width": 118,
+          "height": 104
+        },
+        "shangyiyao2": {
+          "x": 33.07,
+          "y": -10.96,
+          "scaleX": 1.0375,
+          "scaleY": 1.0375,
+          "rotation": -91.29,
+          "width": 115,
+          "height": 93
+        },
+        "shangyiyao3": {
+          "x": 42.05,
+          "y": -2.89,
+          "scaleX": 1.0375,
+          "scaleY": 1.0375,
+          "rotation": -91.29,
+          "width": 98,
+          "height": 75
+        },
+        "shangyiyao4": {
+          "x": 31.11,
+          "y": 4.92,
+          "scaleX": 1.0596,
+          "scaleY": 1.0596,
+          "rotation": -91.29,
+          "width": 103,
+          "height": 102
+        },
+        "shangyiyao5": {
+          "x": 16.78,
+          "y": -6.08,
+          "scaleX": 1.0596,
+          "scaleY": 1.0596,
+          "rotation": -91.29,
+          "width": 119,
+          "height": 124
+        },
+        "shangyiyao7": {
+          "x": 54.07,
+          "y": -3.82,
+          "scaleX": 1.0596,
+          "scaleY": 1.0596,
+          "rotation": -91.29,
+          "width": 96,
+          "height": 103
+        },
+        "shangyiyao8": {
+          "x": 45.4,
+          "y": -5.27,
+          "scaleX": 1.0596,
+          "scaleY": 1.0596,
+          "rotation": -91.29,
+          "width": 101,
+          "height": 71
+        },
+        "shangyiyao9": {
+          "x": 28.89,
+          "y": -6.77,
+          "scaleX": 1.0596,
+          "scaleY": 1.0596,
+          "rotation": -91.29,
+          "width": 121,
+          "height": 119
+        },
+        "shangyiyao10": {
+          "x": 18.55,
+          "y": -8.37,
+          "scaleX": 1.0596,
+          "scaleY": 1.0596,
+          "rotation": -91.29,
+          "width": 120,
+          "height": 122
+        }
+      },
+      "shou_L1": {
+        "shou_L1": {
+          "x": 20.21,
+          "y": 3.74,
+          "rotation": 95.87,
+          "width": 30,
+          "height": 61
+        }
+      },
+      "shou_R1": {
+        "shou_R1": {
+          "x": 17.85,
+          "y": 0.94,
+          "rotation": 86.75,
+          "width": 32,
+          "height": 63
+        }
+      },
+      "shoushi1": {
+        "kong": {
+          "x": 76.18,
+          "y": 1.44,
+          "rotation": 83.3,
+          "width": 10,
+          "height": 10
+        },
+        "shoushi3": {
+          "x": 71.87,
+          "y": 0.21,
+          "rotation": 83.3,
+          "width": 26,
+          "height": 11
+        },
+        "shoushi4": {
+          "x": 69.24,
+          "y": 1.93,
+          "rotation": 83.3,
+          "width": 33,
+          "height": 21
+        },
+        "shoushi5": {
+          "x": 68.21,
+          "y": -0.8,
+          "rotation": 83.3,
+          "width": 30,
+          "height": 21
+        },
+        "shoushi7": {
+          "x": 66.43,
+          "y": 0.36,
+          "rotation": 83.3,
+          "width": 20,
+          "height": 13
+        },
+        "shoushi8": {
+          "x": 62.22,
+          "y": -1.67,
+          "scaleX": 1.081,
+          "scaleY": 1.081,
+          "rotation": 83.3,
+          "width": 27,
+          "height": 48
+        },
+        "shoushi10": {
+          "x": 52.15,
+          "y": 0.7,
+          "scaleX": 1.081,
+          "scaleY": 1.081,
+          "rotation": 83.3,
+          "width": 30,
+          "height": 16
+        }
+      },
+      "tou": {
+        "tou": {
+          "x": 33.17,
+          "y": 3.29,
+          "rotation": -90.86,
+          "width": 83,
+          "height": 103
+        }
+      },
+      "toufahou1": {
+        "kong": {
+          "x": -17.45,
+          "y": 39.44,
+          "rotation": 84.41,
+          "width": 10,
+          "height": 10
+        },
+        "toufahou1": {
+          "x": 52.19,
+          "y": -8.46,
+          "rotation": 84.41,
+          "width": 82,
+          "height": 170
+        },
+        "toufahou2": {
+          "x": -0.62,
+          "y": -3.55,
+          "rotation": 84.41,
+          "width": 94,
+          "height": 40
+        },
+        "toufahou3": {
+          "x": -17.45,
+          "y": 39.44,
+          "rotation": 84.41,
+          "width": 81,
+          "height": 142
+        },
+        "toufahou8": {
+          "x": 123.94,
+          "y": 10.63,
+          "rotation": 84.41,
+          "width": 142,
+          "height": 352
+        }
+      },
+      "toufaqian1": {
+        "toufaqian1": {
+          "x": 33.63,
+          "y": 0.78,
+          "rotation": -90.86,
+          "width": 98,
+          "height": 110
+        },
+        "toufaqian2": {
+          "x": 46.16,
+          "y": 15.59,
+          "rotation": -90.86,
+          "width": 128,
+          "height": 83
+        },
+        "toufaqian3": {
+          "x": 31.42,
+          "y": 5.34,
+          "rotation": -90.86,
+          "width": 100,
+          "height": 113
+        },
+        "toufaqian4": {
+          "x": 32.25,
+          "y": -2.07,
+          "rotation": -90.86,
+          "width": 117,
+          "height": 110
+        },
+        "toufaqian5": {
+          "x": 39.13,
+          "y": 4.61,
+          "rotation": -90.86,
+          "width": 93,
+          "height": 100
+        },
+        "toufaqian6": {
+          "x": 39.13,
+          "y": 4.61,
+          "rotation": -90.86,
+          "width": 99,
+          "height": 101
+        },
+        "toufaqian7": {
+          "x": 38.5,
+          "y": 3.59,
+          "rotation": -90.86,
+          "width": 110,
+          "height": 102
+        },
+        "toufaqian8": {
+          "x": 10.81,
+          "y": 4,
+          "rotation": -90.86,
+          "width": 95,
+          "height": 150
+        },
+        "toufaqian9": {
+          "x": 8.61,
+          "y": 4.04,
+          "rotation": -90.86,
+          "width": 97,
+          "height": 157
+        },
+        "toufaqian10": {
+          "x": -16.75,
+          "y": 13.03,
+          "rotation": -90.86,
+          "width": 108,
+          "height": 207
+        }
+      },
+      "toushi1": {
+        "kong": {
+          "x": 65.29,
+          "y": 11.31,
+          "rotation": -90.86,
+          "width": 10,
+          "height": 10
+        },
+        "toushi1": {
+          "x": 65.29,
+          "y": 11.31,
+          "rotation": -90.86,
+          "width": 84,
+          "height": 29
+        },
+        "toushi3": {
+          "x": 55.86,
+          "y": 22.15,
+          "rotation": -90.86,
+          "width": 122,
+          "height": 51
+        },
+        "toushi4": {
+          "x": 57.16,
+          "y": 9.92,
+          "rotation": -90.86,
+          "width": 169,
+          "height": 83
+        },
+        "toushi5": {
+          "x": 68.74,
+          "y": -3.44,
+          "rotation": -90.86,
+          "width": 131,
+          "height": 64
+        },
+        "toushi6": {
+          "x": 83.06,
+          "y": -17.21,
+          "rotation": -90.86,
+          "width": 97,
+          "height": 84
+        },
+        "toushi7": {
+          "x": 78.49,
+          "y": 7.58,
+          "rotation": -90.86,
+          "width": 97,
+          "height": 48
+        },
+        "toushi8": {
+          "x": 71.93,
+          "y": -4.34,
+          "rotation": -90.86,
+          "width": 170,
+          "height": 58
+        },
+        "toushi9": {
+          "x": 67.99,
+          "y": -10.79,
+          "rotation": -90.86,
+          "width": 114,
+          "height": 92
+        },
+        "toushi10": {
+          "x": 50.3,
+          "y": -23.17,
+          "rotation": -90.86,
+          "width": 47,
+          "height": 43
+        }
+      },
+      "xiaobi_R1": {
+        "xiaobi_R1": {
+          "x": 40.15,
+          "y": -1.21,
+          "rotation": 83.3,
+          "width": 32,
+          "height": 104
+        }
+      },
+      "xiaobii_L1": {
+        "xiaobii_L1": {
+          "x": 42.29,
+          "y": 1.44,
+          "rotation": 102.75,
+          "width": 42,
+          "height": 111
+        }
+      },
+      "xiaotui_L": {
+        "xiaotui_L": {
+          "x": 68.97,
+          "y": -0.83,
+          "scaleX": 1.0302,
+          "scaleY": 1.0302,
+          "rotation": 82.87,
+          "width": 47,
+          "height": 202
+        }
+      },
+      "xiaotui_L1": {
+        "kong": {
+          "x": 68.97,
+          "y": -0.83,
+          "scaleX": 1.0302,
+          "scaleY": 1.0302,
+          "rotation": 82.87,
+          "width": 10,
+          "height": 10
+        },
+        "xiaotui_L3": {
+          "x": 68.97,
+          "y": -0.83,
+          "scaleX": 1.0716,
+          "scaleY": 1.0716,
+          "rotation": 82.87,
+          "width": 46,
+          "height": 200
+        },
+        "xiaotui_L5": {
+          "x": 102.16,
+          "y": -5.24,
+          "scaleX": 1.0716,
+          "scaleY": 1.0716,
+          "rotation": 82.87,
+          "width": 53,
+          "height": 134
+        },
+        "xiaotui_L6": {
+          "x": 139.71,
+          "y": -0.15,
+          "scaleX": 1.0716,
+          "scaleY": 1.0716,
+          "rotation": 82.87,
+          "width": 26,
+          "height": 60
+        },
+        "xiaotui_L7": {
+          "x": 75.03,
+          "y": -0.3,
+          "scaleX": 1.0836,
+          "scaleY": 1.0836,
+          "rotation": 82.87,
+          "width": 47,
+          "height": 201
+        },
+        "xiaotui_L9": {
+          "x": 126.18,
+          "y": 0.76,
+          "scaleX": 1.0836,
+          "scaleY": 1.0836,
+          "rotation": 82.87,
+          "width": 77,
+          "height": 83
+        }
+      },
+      "xiaotui_R": {
+        "xiaotui_R": {
+          "x": 58.29,
+          "y": 4.38,
+          "rotation": 97.05,
+          "width": 45,
+          "height": 159
+        }
+      },
+      "xiaotui_R1": {
+        "kong": {
+          "x": 58.29,
+          "y": 4.38,
+          "scaleX": 0.9702,
+          "scaleY": 0.9702,
+          "rotation": 97.05,
+          "width": 10,
+          "height": 10
+        },
+        "xiaotui_R3": {
+          "x": 58.29,
+          "y": 4.38,
+          "scaleX": 1.0467,
+          "scaleY": 1.0467,
+          "rotation": 97.05,
+          "width": 44,
+          "height": 157
+        },
+        "xiaotui_R5": {
+          "x": 77.78,
+          "y": 7.35,
+          "scaleX": 1.0467,
+          "scaleY": 1.0467,
+          "rotation": 97.05,
+          "width": 50,
+          "height": 110
+        },
+        "xiaotui_R6": {
+          "x": 109.75,
+          "y": 1.71,
+          "scaleX": 1.0467,
+          "scaleY": 1.0467,
+          "rotation": 96.88,
+          "width": 26,
+          "height": 51
+        },
+        "xiaotui_R7": {
+          "x": 66.4,
+          "y": 3.26,
+          "scaleX": 1.0568,
+          "scaleY": 1.0568,
+          "rotation": 97.05,
+          "width": 46,
+          "height": 159
+        },
+        "xiaotui_R9": {
+          "x": 95.53,
+          "y": 1.28,
+          "scaleX": 1.0568,
+          "scaleY": 1.0568,
+          "rotation": 97.05,
+          "width": 76,
+          "height": 83
+        }
+      },
+      "xie_L1": {
+        "kong": {
+          "x": 48.76,
+          "y": 3.16,
+          "rotation": 81.16,
+          "width": 10,
+          "height": 10
+        },
+        "xie_L1": {
+          "x": 37.21,
+          "y": 3.48,
+          "rotation": 81.16,
+          "width": 48,
+          "height": 116
+        },
+        "xie_L2": {
+          "x": 81.08,
+          "y": 2.08,
+          "rotation": 81.16,
+          "width": 36,
+          "height": 38
+        },
+        "xie_L3": {
+          "x": 48.76,
+          "y": 3.16,
+          "rotation": 81.16,
+          "width": 42,
+          "height": 89
+        },
+        "xie_L5": {
+          "x": 46.14,
+          "y": 3.23,
+          "scaleX": 1.0535,
+          "scaleY": 1.0535,
+          "rotation": 81.16,
+          "width": 41,
+          "height": 101
+        },
+        "xie_L6": {
+          "x": 38,
+          "y": 5.22,
+          "scaleX": 1.0637,
+          "scaleY": 1.0637,
+          "rotation": 81.67,
+          "width": 38,
+          "height": 97
+        },
+        "xie_L7": {
+          "x": 43.25,
+          "y": 4.11,
+          "scaleX": 1.0535,
+          "scaleY": 1.0535,
+          "rotation": 81.16,
+          "width": 41,
+          "height": 101
+        },
+        "xie_L8": {
+          "x": 67.85,
+          "y": 0.3,
+          "scaleX": 1.0535,
+          "scaleY": 1.0535,
+          "rotation": 81.16,
+          "width": 40,
+          "height": 48
+        },
+        "xie_L9": {
+          "x": 43.27,
+          "y": 4.97,
+          "scaleX": 1.0535,
+          "scaleY": 1.0535,
+          "rotation": 85.34,
+          "width": 44,
+          "height": 103
+        },
+        "xie_L10": {
+          "x": 55.61,
+          "y": 0.58,
+          "scaleX": 1.0535,
+          "scaleY": 1.0535,
+          "rotation": 81.32,
+          "width": 39,
+          "height": 75
+        }
+      },
+      "xie_R1": {
+        "kong": {
+          "x": 34.61,
+          "y": -3.36,
+          "rotation": 97.97,
+          "width": 10,
+          "height": 10
+        },
+        "xie_R1": {
+          "x": 34.61,
+          "y": -3.36,
+          "rotation": 97.97,
+          "width": 47,
+          "height": 116
+        },
+        "xie_R2": {
+          "x": 75.93,
+          "y": 0.22,
+          "rotation": 94.21,
+          "width": 36,
+          "height": 38
+        },
+        "xie_R3": {
+          "x": 41.81,
+          "y": -0.62,
+          "rotation": 94.21,
+          "width": 39,
+          "height": 92
+        },
+        "xie_R5": {
+          "x": 41.54,
+          "y": -3.26,
+          "scaleX": 1.0345,
+          "scaleY": 1.0345,
+          "rotation": 96.67,
+          "width": 38,
+          "height": 101
+        },
+        "xie_R6": {
+          "x": 41.54,
+          "y": -3.26,
+          "scaleX": 1.069,
+          "scaleY": 1.069,
+          "rotation": 96.67,
+          "width": 37,
+          "height": 99
+        },
+        "xie_R7": {
+          "x": 41.54,
+          "y": -3.26,
+          "scaleX": 1.0345,
+          "scaleY": 1.0345,
+          "rotation": 96.67,
+          "width": 39,
+          "height": 101
+        },
+        "xie_R8": {
+          "x": 64.53,
+          "y": 2.63,
+          "scaleX": 1.0345,
+          "scaleY": 1.0345,
+          "rotation": 97.98,
+          "width": 41,
+          "height": 48
+        },
+        "xie_R9": {
+          "x": 41.54,
+          "y": -3.26,
+          "scaleX": 1.0345,
+          "scaleY": 1.0345,
+          "rotation": 96.67,
+          "width": 40,
+          "height": 104
+        },
+        "xie_R10": {
+          "x": 47.77,
+          "y": -0.46,
+          "scaleX": 0.9984,
+          "scaleY": 0.9984,
+          "rotation": 96.67,
+          "width": 34,
+          "height": 77
+        }
+      },
+      "xiong": {
+        "xiong": {
+          "x": 67.67,
+          "y": -4.86,
+          "rotation": -81.53,
+          "width": 121,
+          "height": 177
+        }
+      },
+      "xiuzi1_L1": {
+        "kong": {
+          "x": 44.35,
+          "y": 1.39,
+          "rotation": 102.75,
+          "width": 10,
+          "height": 10
+        },
+        "xiuzi1_L1": {
+          "x": 44.35,
+          "y": 1.39,
+          "rotation": 102.75,
+          "width": 49,
+          "height": 121
+        },
+        "xiuzi1_L3": {
+          "x": 24.85,
+          "y": -0.02,
+          "scaleX": 1.0325,
+          "scaleY": 1.0325,
+          "rotation": 102.75,
+          "width": 36,
+          "height": 75
+        },
+        "xiuzi1_L6": {
+          "x": 24.85,
+          "y": -0.02,
+          "scaleX": 1.0325,
+          "scaleY": 1.0325,
+          "rotation": 102.75,
+          "width": 58,
+          "height": 96
+        },
+        "xiuzi1_L9": {
+          "x": 42.13,
+          "y": -1.64,
+          "scaleX": 1.0325,
+          "scaleY": 1.0325,
+          "rotation": 102.75,
+          "width": 58,
+          "height": 109
+        }
+      },
+      "xiuzi1_R1": {
+        "kong": {
+          "x": 76.18,
+          "y": 1.44,
+          "rotation": 83.3,
+          "width": 10,
+          "height": 10
+        },
+        "xiuzi1_R1": {
+          "x": 47.07,
+          "y": 2.01,
+          "rotation": 83.3,
+          "width": 48,
+          "height": 121
+        },
+        "xiuzi1_R3": {
+          "x": 26.2,
+          "y": -0.68,
+          "scaleX": 1.016,
+          "scaleY": 1.016,
+          "rotation": 83.3,
+          "width": 30,
+          "height": 66
+        },
+        "xiuzi1_R6": {
+          "x": 25.45,
+          "y": 0.59,
+          "scaleX": 1.016,
+          "scaleY": 1.016,
+          "rotation": 83.3,
+          "width": 51,
+          "height": 92
+        },
+        "xiuzi1_R9": {
+          "x": 38.22,
+          "y": 5.99,
+          "scaleX": 1.016,
+          "scaleY": 1.016,
+          "rotation": 83.3,
+          "width": 59,
+          "height": 100
+        }
+      },
+      "xiuzi2_L1": {
+        "kong": {
+          "x": 46.58,
+          "y": 1.32,
+          "rotation": 101.43,
+          "width": 10,
+          "height": 10
+        },
+        "xiuzi2_L1": {
+          "x": 46.58,
+          "y": 1.32,
+          "rotation": 101.43,
+          "width": 43,
+          "height": 114
+        },
+        "xiuzi2_L3": {
+          "x": 46.58,
+          "y": 1.32,
+          "scaleX": 1.0081,
+          "scaleY": 1.0081,
+          "rotation": 101.43,
+          "width": 40,
+          "height": 114
+        },
+        "xiuzi2_L6": {
+          "x": 60.67,
+          "y": 2.48,
+          "scaleX": 1.0081,
+          "scaleY": 1.0081,
+          "rotation": 101.43,
+          "width": 58,
+          "height": 105
+        },
+        "xiuzi2_L7": {
+          "x": 54.14,
+          "y": -3.09,
+          "scaleX": 1.0081,
+          "scaleY": 1.0081,
+          "rotation": 101.43,
+          "width": 55,
+          "height": 126
+        },
+        "xiuzi2_L9": {
+          "x": 51.25,
+          "y": -0.92,
+          "scaleX": 1.0081,
+          "scaleY": 1.0081,
+          "rotation": 101.43,
+          "width": 52,
+          "height": 115
+        }
+      },
+      "xiuzi2_R1": {
+        "kong": {
+          "x": 43.99,
+          "y": -1.2,
+          "rotation": 84.99,
+          "width": 10,
+          "height": 10
+        },
+        "xiuzi2_R1": {
+          "x": 43.99,
+          "y": -1.2,
+          "rotation": 84.99,
+          "width": 37,
+          "height": 116
+        },
+        "xiuzi2_R3": {
+          "x": 43.99,
+          "y": -1.2,
+          "rotation": 84.99,
+          "width": 35,
+          "height": 115
+        },
+        "xiuzi2_R6": {
+          "x": 54.3,
+          "y": -1.36,
+          "rotation": 84.99,
+          "width": 48,
+          "height": 110
+        },
+        "xiuzi2_R7": {
+          "x": 52.75,
+          "y": 0.03,
+          "rotation": 84.99,
+          "width": 46,
+          "height": 133
+        },
+        "xiuzi2_R9": {
+          "x": 47.86,
+          "y": 0.74,
+          "rotation": 84.99,
+          "width": 41,
+          "height": 124
+        }
+      },
+      "yao": {
+        "kong": {
+          "x": 26.69,
+          "y": -5.52,
+          "rotation": -91.29,
+          "width": 10,
+          "height": 10
+        },
+        "yao1": {
+          "x": 26.69,
+          "y": -5.52,
+          "rotation": -91.29,
+          "width": 104,
+          "height": 115
+        },
+        "yao3": {
+          "x": 28.76,
+          "y": -6.73,
+          "rotation": -91.29,
+          "width": 103,
+          "height": 113
+        },
+        "yao6": {
+          "x": 22.84,
+          "y": -6.6,
+          "rotation": -91.29,
+          "width": 114,
+          "height": 119
+        }
+      },
+      "zui": {
+        "zui": {
+          "x": -1.19,
+          "y": 13.31,
+          "rotation": -90.86,
+          "width": 22,
+          "height": 10
+        }
+      }
+    }
+  }
+],
+"bones": 
+  [{"x":516,"y":272,"parent":"","name":"root"},{"x":0,"y":0,"parent":"root","name":"bao1"},{"x":0,"y":290,"parent":"bao1","name":"yao"},{"x":2,"y":-103,"parent":"yao","name":"shangyiyao1"},{"x":7,"y":-67,"parent":"shangyiyao1","name":"shangyi1"},{"x":154,"y":73,"parent":"shangyi1","name":"dabi_R1"},{"x":67,"y":62,"parent":"dabi_R1","name":"xiaobi_R1"},{"x":34,"y":80,"parent":"xiaobi_R1","name":"shou_R1"},{"x":36,"y":74,"parent":"shou_R1","name":"bao2"},{"x":-172,"y":103,"parent":"shangyi1","name":"dabi_L1"},{"x":-73,"y":86,"parent":"dabi_L1","name":"xiaobii_L1"},{"x":-65,"y":99,"parent":"xiaobii_L1","name":"shou_L1"},{"x":-1,"y":-223,"parent":"shangyi1","name":"biyan"},{"x":97,"y":-18,"parent":"biyan","name":"erhuan1"},{"x":4,"y":-63,"parent":"biyan","name":"toufahou1"},{"x":-60,"y":258,"parent":"yao","name":"datui_R1"},{"x":-22,"y":136,"parent":"datui_R1","name":"xiaotui_R1"},{"x":-19,"y":111,"parent":"xiaotui_R1","name":"xie_R1"},{"x":75,"y":259,"parent":"yao","name":"datui_L1"},{"x":17,"y":133,"parent":"datui_L1","name":"xiaotui_L1"},{"x":20,"y":105,"parent":"xiaotui_L1","name":"xie_L1"},{"x":-118,"y":130,"parent":"yao","name":"qun_L1"},{"x":126,"y":140,"parent":"yao","name":"qun_R1"},{"x":-6,"y":142,"parent":"yao","name":"qun_M1"},{"x":-231,"y":659,"parent":"root","name":"zuotui"},{"x":298,"y":659,"parent":"root","name":"youtui"},{"x":-71,"y":943,"parent":"root","name":"gonxin"},{"x":30,"y":958,"parent":"root","name":"gonxin2"},{"x":-197,"y":939,"parent":"root","name":"gonxin3"},{"x":130,"y":971,"parent":"root","name":"gonxin4"},{"x":238,"y":964,"parent":"root","name":"gonxin5"}],
 "posi": {
 "bao1": {
   "rotate": false,

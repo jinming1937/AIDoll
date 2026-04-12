@@ -27,7 +27,7 @@ async function genImg() {
   return image;
 }
 
-export default () => {
+export default function Demo() {
   const numberOfBoxes = 150;
   const pos = { x: 128, y: 128 };
   const width = 256;
