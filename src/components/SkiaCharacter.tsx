@@ -234,7 +234,7 @@ export default function SkiaCharacter({ config, selectedOutfits }: { config: any
     const transform: Transforms3d = [];
     if (bone.x || bone.y) transform.push({ translate: [bone.x || 0, bone.y || 0, 0] });
     // if (bone.rotation) transform.push({ rotate: wr * Math.PI / 180 });
-
+    const skin = config.skins && config.skins[0];
     // 找到当前骨骼对应的所有插槽
     const slotsOnBone = config.slots.filter((slot: { bone: string }) => slot.bone === bone.name);
 
@@ -243,37 +243,44 @@ export default function SkiaCharacter({ config, selectedOutfits }: { config: any
     return (
       <Group key={bone.name} origin={{x: parentWorld.x, y: parentWorld.y}} transform={transform}>
         {/* 骨骼调试点 */}
-        <Circle cx={0} cy={0} r={3} color="red" />
+        <Circle cx={0} cy={0} r={6} color="red" />
         <Text x={10} y={5} text={bone.name} font={font} color="blue" />
         {/* ======================================
-            2. 插槽 slot = 图片容器
+            插槽 slot = 图片容器
             ====================================== */}
-        {/* {slotsOnBone.map((slot: { name: string, attachment: string }) => {
-          const attachment = config.skins[0].attachments[slot.attachment]; // 从皮肤里取图片配置
-          if (!attachment) return null;
+        {slotsOnBone.map((slot: { name: string, attachment: string; bone: string }, index: number) => {
+          // const attachment = config.skins[0].attachments[slot.attachment]; // 从皮肤里取图片配置
+          // const boneName = slot.bone;
+          const attachmentKey = slot.attachment || slot.name;
+          const attachments = skin?.attachments?.[slot.name];
+          /** 插槽图片配置: x, y */
+          const atta = attachments ? (attachments[attachmentKey] || Object.values(attachments)[0]) : null;
+          const pos = config.posi[attachmentKey];
 
-          let atta = attachment[slot.attachment] || attachment;
-          if (!atta) return null;
-          const pos = config.posi[slot.attachment];
-          if (!pos) return null;
-          const size = pos.rotate ? pos.size.toReversed() : pos.size; 
-          const imgSprite = Skia.XYWHRect(pos.xy[0], pos.xy[1], size[0], size[1]);
+          if (!atta || !pos) return null;
+
+          const size = pos.rotate ? pos.size.toReversed() : pos.size;
+          const xy = pos.xy;
+          const sx = xy[0];
+          const sy = xy[1];
+          /** 插槽图片配置: width, height */
+          const imgSprite = Skia.XYWHRect(sx, sy, size[0], size[1]);
           const rotate = pos.rotate ? 90 : 0;
-          const rad = (rotate || 0) * Math.PI / 180;
+          const rad = rotate * Math.PI / 180;
           const scos = Math.cos(rad);
           const ssin = Math.sin(rad);
-          const imgTransform = Skia.RSXform(scos, ssin, atta.x, atta.y);
+          /** 插槽图片配置: 偏移、旋转 */
+          const imgTransform = Skia.RSXform(scos, ssin, 0, 0); // 已经用group transform 处理了，所以是0，0
 
           return (
             <Group
-              key={slot.attachment}
-              transform={[{ translate: [atta.x, atta.y, 0] }]}
+              key={slot.attachment + '_' + index}
+              transform={[{ translate: [atta.x, atta.y, 0] }]} // 坐标偏移
             >
               {spriteImage && <Atlas image={spriteImage} sprites={[imgSprite]} transforms={[imgTransform]} />}
             </Group>
           );
-        })} */}
-
+        })}
         {/* 子骨骼递归 */}
         {bone.children?.map(child => renderBone(child, { x:wx, y:wy, rotation:wr }))}
       </Group>
@@ -292,7 +299,7 @@ export default function SkiaCharacter({ config, selectedOutfits }: { config: any
       <Canvas style={styles.canvas}>
         <Group>
           {/* 整体角色偏移到屏幕中间 */}
-          <Group origin={{x:0, y:0}} transform={[{ translate: [-200, 20], }, {scale: 0.6 }]}>
+          <Group origin={{x:0, y:0}} transform={[{ translate: [200, 20], }, {scale: 0.8 }]}>
             {renderBone(map['root'])}
             {/* {buildSkeletonGroups(config.bones, font)} */}
           </Group>
