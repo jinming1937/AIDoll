@@ -59,76 +59,76 @@ type IBone = {
 // ==============================================
 // 核心工具函数：把骨骼 JSON 转成 Skia 嵌套结构
 // ==============================================
-function buildSkeletonGroups(bones: IBone[], font: SkFont | null) {
-  const boneMap: Record<string, IBone> = {};
-  const rootGroups = [];
+// function buildSkeletonGroups(bones: IBone[], font: SkFont | null) {
+//   const boneMap: Record<string, IBone> = {};
+//   const rootGroups = [];
 
-  // 1. 先把所有骨骼放进 map 里
-  bones.forEach(bone => {
-    boneMap[bone.name] = {
-      ...bone,
-      children: []
-    };
-  });
+//   // 1. 先把所有骨骼放进 map 里
+//   bones.forEach(bone => {
+//     boneMap[bone.name] = {
+//       ...bone,
+//       children: []
+//     };
+//   });
 
-  // 2. 建立父子关系
-  bones.forEach(bone => {
-    if (bone.parent && boneMap[bone.parent]) {
-      boneMap[bone.parent]?.children?.push(boneMap[bone.name]);
-    }
-  });
+//   // 2. 建立父子关系
+//   bones.forEach(bone => {
+//     if (bone.parent && boneMap[bone.parent]) {
+//       boneMap[bone.parent]?.children?.push(boneMap[bone.name]);
+//     }
+//   });
 
-  // 3. 找到根节点
-  const root = boneMap['root'];
+//   // 3. 找到根节点
+//   const root = boneMap['root'];
 
-  // 4. 递归渲染骨骼为 Skia Group
-  function renderGroup(bone: IBone) {
-    const transform: Transforms3d = [];
+//   // 4. 递归渲染骨骼为 Skia Group
+//   function renderGroup(bone: IBone) {
+//     const transform: Transforms3d = [];
 
-    if (['gonxin', 'gonxin2', 'gonxin3', 'gonxin4', 'gonxin5'].includes(bone.name)) {
-      return null;
-    }
-    // 位置
-    if (bone.x !== undefined || bone.y !== undefined) {
-      transform.push({
-        translate: [bone.x, 300 - bone.y, 0]
-      });
-    }
+//     if (['gonxin', 'gonxin2', 'gonxin3', 'gonxin4', 'gonxin5'].includes(bone.name)) {
+//       return null;
+//     }
+//     // 位置
+//     if (bone.x !== undefined || bone.y !== undefined) {
+//       transform.push({
+//         translate: [bone.x, 300 - bone.y, 0]
+//       });
+//     }
 
-    // 旋转
-    if (bone.rotation !== undefined) {
-      // transform.push({ rotate: bone.rotation });
-    }
-    // 子骨骼
-    const childGroups = (bone.children || []).map(child => renderGroup(child));
+//     // 旋转
+//     if (bone.rotation !== undefined) {
+//       // transform.push({ rotate: bone.rotation });
+//     }
+//     // 子骨骼
+//     const childGroups = (bone.children || []).map(child => renderGroup(child));
 
-    // 返回 Group
-    return (
-      <Group key={bone.name} transform={transform}>
-        {/* 骨骼可视化（调试用） */}
-        <Rect rect={rect(2, 2, 10, bone.length || 40)} color="blue" />
-        <Circle cx={0} cy={0} r={4} color="red" />
-        <Text x={10} y={5} text={bone.name} font={font} color="blue" />
-        {/* 你的精灵图/衣服/身体 可以挂在这里！ */}
-        {childGroups}
-      </Group>
-    );
-  }
+//     // 返回 Group
+//     return (
+//       <Group key={bone.name} transform={transform}>
+//         {/* 骨骼可视化（调试用） */}
+//         <Rect rect={rect(2, 2, 10, bone.length || 40)} color="blue" />
+//         <Circle cx={0} cy={0} r={4} color="red" />
+//         <Text x={10} y={5} text={bone.name} font={font} color="blue" />
+//         {/* 你的精灵图/衣服/身体 可以挂在这里！ */}
+//         {childGroups}
+//       </Group>
+//     );
+//   }
 
-  return renderGroup(root);
-}
+//   return renderGroup(root);
+// }
 
 // ==============================
 // 工具：构建骨骼父子关系
 // ==============================
-function buildSkeletonTree(bones: IBone[], renderBone: (bone: IBone) => ReactNode) {
-  const map: Record<string, IBone> = {};
-  bones.forEach(b => (map[b.name] = { ...b, children: [] }));
-  bones.forEach(b => {
-    if (b.parent) map[b.parent]?.children?.push(map[b.name]);
-  });
-  return renderBone(map.root);
-}
+// function buildSkeletonTree(bones: IBone[], renderBone: (bone: IBone) => ReactNode) {
+//   const map: Record<string, IBone> = {};
+//   bones.forEach(b => (map[b.name] = { ...b, children: [] }));
+//   bones.forEach(b => {
+//     if (b.parent) map[b.parent]?.children?.push(map[b.name]);
+//   });
+//   return renderBone(map.root);
+// }
 export default function SkiaCharacter({ config, selectedOutfits }: { config: any; selectedOutfits?: Record<string, string> }) {
   const [sprites, setSprites] = useState<SkRect[]>([]);
   const [transforms, setTransforms] = useState<SkRSXform[]>([]);
@@ -243,8 +243,8 @@ export default function SkiaCharacter({ config, selectedOutfits }: { config: any
     return (
       <Group key={bone.name} origin={{x: parentWorld.x, y: parentWorld.y}} transform={transform}>
         {/* 骨骼调试点 */}
-        <Circle cx={0} cy={0} r={6} color="red" />
-        <Text x={10} y={5} text={bone.name} font={font} color="blue" />
+        {/* <Circle cx={0} cy={0} r={6} color="red" /> */}
+        {/* <Text x={10} y={5} text={bone.name} font={font} color="blue" /> */}
         {/* ======================================
             插槽 slot = 图片容器
             ====================================== */}
@@ -299,7 +299,7 @@ export default function SkiaCharacter({ config, selectedOutfits }: { config: any
       <Canvas style={styles.canvas}>
         <Group>
           {/* 整体角色偏移到屏幕中间 */}
-          <Group origin={{x:0, y:0}} transform={[{ translate: [200, 20], }, {scale: 0.8 }]}>
+          <Group origin={{x:0, y:0}} transform={[{ translate: [160, 20], }, {scale: 0.8 }]}>
             {renderBone(map['root'])}
             {/* {buildSkeletonGroups(config.bones, font)} */}
           </Group>
